@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "996724195337",
+    "firebase_url": "https://billsplitter-57621.firebaseio.com",
+    "project_id": "billsplitter-57621",
+    "storage_bucket": "billsplitter-57621.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996724195337:android:9ac7891e9cff9598",
+        "android_client_info": {
+          "package_name": "casier.billsplitter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "996724195337-crqr7cgvqfh77fsa68io0o33hu30j06e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "casier.billsplitter",
+            "certificate_hash": "575e73b18e297c6d8089b365745a4f11ed8cbdbc"
+          }
+        },
+        {
+          "client_id": "996724195337-puuakgs5jj46g2sfknb0maps7rf6vtjl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeSMdylzsrSnBlhU-XomaC5qYymnhmK6c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "996724195337-puuakgs5jj46g2sfknb0maps7rf6vtjl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

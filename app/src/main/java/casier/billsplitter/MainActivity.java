@@ -33,6 +33,13 @@ import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final String LOG_TAG = "Text API";
     private static final int PHOTO_REQUEST = 10;
 
+    private FirebaseAuth mAuth;
+
     List<String> currency = Arrays.asList("$", "€", "¥", "₡", "£", "₪", "₦", "₱", "zł", "₲", "฿", "₴", "₫");
 
     private BillArrayAdapter adapter;
@@ -72,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mAuth = FirebaseAuth.getInstance();
+
         detector = new TextRecognizer.Builder(getApplicationContext()).build();
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -83,9 +94,42 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
 //        scanList.setAdapter(adapter);
         scanList.setOnItemClickListener(this);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("bills");
+
+        myRef.setValue("Hello, World!");
+
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                String value = dataSnapshot.getValue(String.class);
+                Log.d(TAG, "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
+        myRef.setValue("Salut");
     }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
+    }
+
+    private void updateUI(FirebaseUser currentUser) {
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -109,55 +153,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (detector.isOperational() && bitmap != null) {
                     Frame frame = new Frame.Builder().setBitmap(bitmap).build();
                     SparseArray<TextBlock> textBlocks = detector.detect(frame);
-                    String blocks = "";
-                    String lines = "";
-                    String words = "";
                     final ArrayList<String> list = new ArrayList<>();
                     for (int index = 0; index < textBlocks.size(); index++) {
                         //extract scanned text blocks here
                         TextBlock tBlock = textBlocks.valueAt(index);
-                        blocks = blocks + tBlock.getValue() + "\n" + "\n";
                         for (Text line : tBlock.getComponents()) {
-                            //TODO : check if line contains any of the currency element
 
-//                            for(int c = 0; c < currency.size(); c++){
-//                                if (line.getValue().contains(currency.get(c))){
-//                                    list.add(line.getValue());
-//                                }
-//                            }
+                            // Check if the line contains at least 2 numbers
+                            String pattern = "(.*[0-9]{2,}.*)";
 
-                            list.add(line.getValue());
-                            //extract scanned text lines here
-                            lines = lines + line.getValue() + "\n";
-                            for (Text element : line.getComponents()) {
-                                //extract scanned text words here
-                                words = words + element.getValue() + ", ";
+                            if(line.getValue().matches(pattern)){
+                                list.add(line.getValue());
+                            } else {
+                                for(int c = 0; c < currency.size(); c++){
+                                    if (line.getValue().contains(currency.get(c))){
+                                        list.add(line.getValue());
+                                    }
+                                }
                             }
                         }
                     }
                     if (textBlocks.size() == 0) {
-                        scanResults.setText("Scan Failed: Found nothing to scan");
+                        Toast.makeText(this, "Scan Failed: Found nothing to scan", Toast.LENGTH_SHORT).show();
                     } else {
                         adapter = new BillArrayAdapter(this, R.layout.row_layout, list);
                         scanList.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
-
-//                        scanResults.setText(scanResults.getText() + "Blocks: " + "\n");
-//                        scanResults.setText(scanResults.getText() + blocks + "\n");
-//                        scanResults.setText(scanResults.getText() + "---------" + "\n");
-//                        scanResults.setText(scanResults.getText() + "Lines: " + "\n");
-//                        scanResults.setText(scanResults.getText() + lines + "\n");
-//                        scanResults.setText(scanResults.getText() + "---------" + "\n");
-//                        scanResults.setText(scanResults.getText() + "Words: " + "\n");
-//                        scanResults.setText(scanResults.getText() + words + "\n");
-//                        scanResults.setText(scanResults.getText() + "---------" + "\n");
                     }
                 } else {
-                    scanResults.setText("Could not set up the detector!");
+                    Toast.makeText(this, "Could not set up the detector!", Toast.LENGTH_SHORT).show();
                 }
             } catch (Exception e) {
-                Toast.makeText(this, "Failed to load Image", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(this, "Failed to load Image", Toast.LENGTH_SHORT).show();
                 Log.e(LOG_TAG, e.toString());
             }
         }
@@ -228,7 +255,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
         String lineValue = adapterView.getItemAtPosition(i).toString();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Would you like to add " + lineValue + " to the count ?");
