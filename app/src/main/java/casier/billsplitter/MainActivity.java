@@ -2,6 +2,7 @@ package casier.billsplitter;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -11,9 +12,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,6 +24,8 @@ import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,15 +36,20 @@ import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
 
     @BindView(R.id.fab) FloatingActionButton button;
     @BindView(R.id.scanResult) TextView scanResults;
+    @BindView(R.id.scanList) ListView scanList;
+    @BindView(R.id.coordinator) CoordinatorLayout coordinator;
 
     private static final String TAG = "MainActivityDebug";
     private Uri imageUri;
@@ -49,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String SAVED_INSTANCE_RESULT = "result";
     private static final String LOG_TAG = "Text API";
     private static final int PHOTO_REQUEST = 10;
+
+    List<String> currency = Arrays.asList("$", "€", "¥", "₡", "£", "₪", "₦", "₱", "zł", "₲", "฿", "₴", "₫");
+
+    private BillArrayAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +81,11 @@ public class MainActivity extends AppCompatActivity {
                         String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_PERMISSION);
             }
         });
-
+//        scanList.setAdapter(adapter);
+        scanList.setOnItemClickListener(this);
     }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -95,11 +112,21 @@ public class MainActivity extends AppCompatActivity {
                     String blocks = "";
                     String lines = "";
                     String words = "";
+                    final ArrayList<String> list = new ArrayList<>();
                     for (int index = 0; index < textBlocks.size(); index++) {
                         //extract scanned text blocks here
                         TextBlock tBlock = textBlocks.valueAt(index);
                         blocks = blocks + tBlock.getValue() + "\n" + "\n";
                         for (Text line : tBlock.getComponents()) {
+                            //TODO : check if line contains any of the currency element
+
+//                            for(int c = 0; c < currency.size(); c++){
+//                                if (line.getValue().contains(currency.get(c))){
+//                                    list.add(line.getValue());
+//                                }
+//                            }
+
+                            list.add(line.getValue());
                             //extract scanned text lines here
                             lines = lines + line.getValue() + "\n";
                             for (Text element : line.getComponents()) {
@@ -111,15 +138,19 @@ public class MainActivity extends AppCompatActivity {
                     if (textBlocks.size() == 0) {
                         scanResults.setText("Scan Failed: Found nothing to scan");
                     } else {
-                        scanResults.setText(scanResults.getText() + "Blocks: " + "\n");
-                        scanResults.setText(scanResults.getText() + blocks + "\n");
-                        scanResults.setText(scanResults.getText() + "---------" + "\n");
-                        scanResults.setText(scanResults.getText() + "Lines: " + "\n");
-                        scanResults.setText(scanResults.getText() + lines + "\n");
-                        scanResults.setText(scanResults.getText() + "---------" + "\n");
-                        scanResults.setText(scanResults.getText() + "Words: " + "\n");
-                        scanResults.setText(scanResults.getText() + words + "\n");
-                        scanResults.setText(scanResults.getText() + "---------" + "\n");
+                        adapter = new BillArrayAdapter(this, R.layout.row_layout, list);
+                        scanList.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+
+//                        scanResults.setText(scanResults.getText() + "Blocks: " + "\n");
+//                        scanResults.setText(scanResults.getText() + blocks + "\n");
+//                        scanResults.setText(scanResults.getText() + "---------" + "\n");
+//                        scanResults.setText(scanResults.getText() + "Lines: " + "\n");
+//                        scanResults.setText(scanResults.getText() + lines + "\n");
+//                        scanResults.setText(scanResults.getText() + "---------" + "\n");
+//                        scanResults.setText(scanResults.getText() + "Words: " + "\n");
+//                        scanResults.setText(scanResults.getText() + words + "\n");
+//                        scanResults.setText(scanResults.getText() + "---------" + "\n");
                     }
                 } else {
                     scanResults.setText("Could not set up the detector!");
@@ -195,4 +226,24 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+        String lineValue = adapterView.getItemAtPosition(i).toString();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Would you like to add " + lineValue + " to the count ?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // todo
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // todo
+            }
+        });
+        builder.show();
+    }
 }
