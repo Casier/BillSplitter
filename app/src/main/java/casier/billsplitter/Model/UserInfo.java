@@ -4,9 +4,9 @@ import android.net.Uri;
 
 public class UserInfo {
 
+    private String user_id;
     private String user_email;
     private String user_name;
-    private String user_id;
     private Uri user_photo_url;
 
     private static UserInfo mInstance = null;

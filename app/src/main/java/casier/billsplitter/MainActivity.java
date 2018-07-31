@@ -49,6 +49,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import casier.billsplitter.Model.User;
+import casier.billsplitter.Model.UserInfo;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -77,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("AMAZON", UserInfo.getInstance().getUserId());
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -95,8 +98,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //        scanList.setAdapter(adapter);
         scanList.setOnItemClickListener(this);
 
+        User user = new User();
+        user.setUserEmail(UserInfo.getInstance().getUserEmail());
+        user.setUserName(UserInfo.getInstance().getUserName());
+        user.setUserPhotoUrl(UserInfo.getInstance().getUserPhotoUrl().toString());
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("bills");
+        DatabaseReference myReff = database.getReference("users");
+
+        myReff.child(UserInfo.getInstance().getUserId()).setValue(user);
+
 
         myRef.setValue("Hello, World!");
 
