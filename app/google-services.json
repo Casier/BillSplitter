@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "996724195337-d5o742uee624me9m5ocgk5q4osr7h7gm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "casier.billsplitter",
+            "certificate_hash": "7392f5f1096cf2e866318ca0f96b2b6924824abe"
+          }
+        },
+        {
           "client_id": "996724195337-puuakgs5jj46g2sfknb0maps7rf6vtjl.apps.googleusercontent.com",
           "client_type": 3
         }
