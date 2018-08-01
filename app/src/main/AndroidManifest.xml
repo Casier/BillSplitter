@@ -23,6 +23,11 @@
             android:label="@string/app_name"
             android:theme="@style/YellowBlue">
         </activity>
+        <activity
+            android:name=".BillPickerActivity"
+            android:label="@string/app_name"
+            android:theme="@style/YellowBlue">
+        </activity>
         <activity android:name=".Login.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/YellowBlue">

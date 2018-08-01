@@ -18,7 +18,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -35,6 +34,7 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int PHOTO_REQUEST = 10;
 
     private FirebaseAuth mAuth;
+    private FirebaseDatabase mDatabase;
 
     List<String> currency = Arrays.asList("$", "€", "¥", "₡", "£", "₪", "₦", "₱", "zł", "₲", "฿", "₴", "₫");
 
@@ -81,8 +82,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         Log.d("AMAZON", UserInfo.getInstance().getUserId());
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -103,9 +102,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         user.setUserName(UserInfo.getInstance().getUserName());
         user.setUserPhotoUrl(UserInfo.getInstance().getUserPhotoUrl().toString());
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("bills");
-        DatabaseReference myReff = database.getReference("users");
+        mDatabase= FirebaseDatabase.getInstance();
+        DatabaseReference myRef = mDatabase.getReference("bills");
+        DatabaseReference myReff = mDatabase.getReference("users");
 
         myReff.child(UserInfo.getInstance().getUserId()).setValue(user);
 
@@ -137,7 +136,37 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        displayInfo();
         updateUI(currentUser);
+    }
+
+    /* TODO Remove this
+        it's just a how to for SELECT in Firebase
+     */
+    private void displayInfo(){
+        mDatabase.getReference("users").orderByChild(UserInfo.getInstance().getUserId()).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                User u = dataSnapshot.getValue(User.class);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                dataSnapshot.getValue();
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     private void updateUI(FirebaseUser currentUser) {
@@ -185,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             }
                         }
                     }
-                    if (textBlocks.size() == 0) {
+                    if (list.size() < 1) {
                         Toast.makeText(this, "Scan Failed: Found nothing to scan", Toast.LENGTH_SHORT).show();
                     } else {
                         adapter = new BillArrayAdapter(this, R.layout.row_layout, list);
