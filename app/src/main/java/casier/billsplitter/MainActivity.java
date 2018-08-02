@@ -2,7 +2,6 @@ package casier.billsplitter;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,21 +12,21 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
@@ -39,35 +38,41 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.User;
 import casier.billsplitter.Model.UserInfo;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-
-    @BindView(R.id.fab) FloatingActionButton button;
+    @BindView(R.id.fabMenu) FloatingActionMenu fabMenu;
+    @BindView(R.id.fabCamera) com.github.clans.fab.FloatingActionButton fabCamera;
+    @BindView(R.id.fabText) com.github.clans.fab.FloatingActionButton fabText;
     @BindView(R.id.scanResult) TextView scanResults;
     @BindView(R.id.scanList) ListView scanList;
     @BindView(R.id.coordinator) CoordinatorLayout coordinator;
 
+    private EditText billAmount;
+    private EditText billName;
+
     private static final String TAG = "MainActivityDebug";
-    private Uri imageUri;
-    private TextRecognizer detector;
     private static final int REQUEST_WRITE_PERMISSION = 20;
+    private static final int PHOTO_REQUEST = 10;
     private static final String SAVED_INSTANCE_URI = "uri";
     private static final String SAVED_INSTANCE_RESULT = "result";
-    private static final String LOG_TAG = "Text API";
-    private static final int PHOTO_REQUEST = 10;
+
+    private Uri imageUri;
+    private TextRecognizer detector;
 
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
@@ -80,21 +85,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d("AMAZON", UserInfo.getInstance().getUserId());
         ButterKnife.bind(this);
 
         mAuth = FirebaseAuth.getInstance();
 
         detector = new TextRecognizer.Builder(getApplicationContext()).build();
 
-        button.setOnClickListener(new View.OnClickListener() {
+        fabCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fabMenu.close(false);
                 ActivityCompat.requestPermissions(MainActivity.this, new
                         String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_PERMISSION);
             }
         });
-//        scanList.setAdapter(adapter);
+
+        fabText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addBill(null);
+                fabMenu.close(false);
+            }
+        });
+
         scanList.setOnItemClickListener(this);
 
         User user = new User();
@@ -103,32 +116,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         user.setUserPhotoUrl(UserInfo.getInstance().getUserPhotoUrl().toString());
 
         mDatabase= FirebaseDatabase.getInstance();
-        DatabaseReference myRef = mDatabase.getReference("bills");
-        DatabaseReference myReff = mDatabase.getReference("users");
+        DatabaseReference myRef = mDatabase.getReference("users");
 
-        myReff.child(UserInfo.getInstance().getUserId()).setValue(user);
-
-
-        myRef.setValue("Hello, World!");
-
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                Log.d(TAG, "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
-
-        myRef.setValue("Salut");
+        myRef.child(UserInfo.getInstance().getUserId()).setValue(user);
     }
 
 
@@ -136,8 +126,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        displayInfo();
-        updateUI(currentUser);
     }
 
     /* TODO Remove this
@@ -169,9 +157,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
-    private void updateUI(FirebaseUser currentUser) {
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);switch (requestCode) {
@@ -196,16 +181,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     SparseArray<TextBlock> textBlocks = detector.detect(frame);
                     final ArrayList<String> list = new ArrayList<>();
                     for (int index = 0; index < textBlocks.size(); index++) {
-                        //extract scanned text blocks here
                         TextBlock tBlock = textBlocks.valueAt(index);
                         for (Text line : tBlock.getComponents()) {
-
                             // Check if the line contains at least 2 numbers
                             String pattern = "(.*[0-9]{2,}.*)";
-
                             if(line.getValue().matches(pattern)){
-                                list.add(line.getValue());
-                            } else {
                                 for(int c = 0; c < currency.size(); c++){
                                     if (line.getValue().contains(currency.get(c))){
                                         list.add(line.getValue());
@@ -226,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             } catch (Exception e) {
                 Toast.makeText(this, "Failed to load Image", Toast.LENGTH_SHORT).show();
-                Log.e(LOG_TAG, e.toString());
+                Log.e(TAG, e.toString());
             }
         }
     }
@@ -273,44 +253,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         String lineValue = adapterView.getItemAtPosition(i).toString();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Would you like to add " + lineValue + " to the count ?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // todo
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // todo
-            }
-        });
-        builder.show();
+        addBill(lineValue);
+    }
+
+    private void addBill(String value){
+        boolean wrapInScrollView = true;
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title("Nouvelle facture")
+                .customView(R.layout.dialog_add_bill, wrapInScrollView)
+                .positiveText("Ajouter")
+                .negativeText("Annuler")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        Date date = Calendar.getInstance().getTime();
+                        billAmount = dialog.getCustomView().findViewById(R.id.bill_amount);
+                        billName = dialog.getCustomView().findViewById(R.id.bill_name);
+                        String userId = UserInfo.getInstance().getUserId();
+                        String id = date.toString() + userId;
+                        Bill bill = new Bill(id, date, billName.getText().toString(), UserInfo.getInstance().getUserId(), convertToFloatedString(billAmount.getText().toString()));
+
+                        DatabaseReference myRef = mDatabase.getReference("bills");
+                        myRef.child(id).setValue(bill);
+                    }
+                })
+                .show();
+
+        if(value != null) {
+            billAmount = dialog.getCustomView().findViewById(R.id.bill_amount);
+            billAmount.setText(convertToFloatedString(value)); // TODO traiter le texte pour afficher uniquement la valeur sans la currency
+        }
+    }
+
+    private String convertToFloatedString(String value){
+        for(int i = 0; i < currency.size(); i++){
+            value = value.replace(currency.get(i), "");
+        }
+        if(value.contains(".")) value = value.substring(0, value.indexOf(".")+3);
+        if(value.contains(",")) value = value.substring(0, value.indexOf(",") +3);
+
+        value = value.replaceAll("[^\\d.]", "");
+
+        value.replace(",", ".");
+        return value;
     }
 }
