@@ -271,12 +271,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         Date date = Calendar.getInstance().getTime();
                         billAmount = dialog.getCustomView().findViewById(R.id.bill_amount);
                         billName = dialog.getCustomView().findViewById(R.id.bill_name);
-                        String userId = UserInfo.getInstance().getUserId();
-                        String id = date.toString() + userId;
-                        Bill bill = new Bill(id, date, billName.getText().toString(), UserInfo.getInstance().getUserId(), convertToFloatedString(billAmount.getText().toString()));
+                        Bill bill = new Bill(date.toString(), billName.getText().toString(), UserInfo.getInstance().getUserId(), convertToFloatedString(billAmount.getText().toString()));
 
                         DatabaseReference myRef = mDatabase.getReference("bills");
-                        myRef.child(id).setValue(bill);
+                        myRef.child(date.toString()).setValue(bill);
                     }
                 })
                 .show();
@@ -291,7 +289,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         for(int i = 0; i < currency.size(); i++){
             value = value.replace(currency.get(i), "");
         }
-        if(value.contains(".")) value = value.substring(0, value.indexOf(".")+3);
+
+        if(value.contains(".")) {
+            if(value.length() > value.indexOf(".") + 3) value = value.substring(0, value.indexOf(".")+3);
+        }
         if(value.contains(",")) value = value.substring(0, value.indexOf(",") +3);
 
         value = value.replaceAll("[^\\d.]", "");

@@ -28,6 +28,11 @@
             android:label="@string/app_name"
             android:theme="@style/YellowBlue">
         </activity>
+        <activity
+            android:name=".Balance.BalanceActivity"
+            android:label="@string/app_name"
+            android:theme="@style/YellowBlue">
+        </activity>
         <activity android:name=".Login.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/YellowBlue">

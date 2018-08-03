@@ -3,7 +3,6 @@ package casier.billsplitter.Balance;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,18 +13,12 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.UserInfo;
 import casier.billsplitter.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BalanceArrayAdapter extends ArrayAdapter<Bill> {
-
-    @BindView(R.id.billName) TextView billName;
-    @BindView(R.id.billAmount) TextView billAmount;
-    @BindView(R.id.billUserImage) CircleImageView imageView;
 
     private Context context;
     private List<Bill> billList;
@@ -36,41 +29,51 @@ public class BalanceArrayAdapter extends ArrayAdapter<Bill> {
         this.billList = billList;
     }
 
-    @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Bill bill = getItem(position);
+    public View getView(int position, View convertView, ViewGroup parent) {
 
-        if(getItemViewType(position) == 1){
-            convertView = LayoutInflater.from(context).inflate(R.layout.row_bill_layout, null);
-        } else {
-            convertView = LayoutInflater.from(context).inflate(R.layout.row_bill_self_layout, null);
+        Bill bill = billList.get(position);
+
+
+        View v = convertView;
+        if (v == null) {
+            LayoutInflater vi;
+            vi = LayoutInflater.from(context);
+            if(bill.getOwnerId().equals(UserInfo.getInstance().getUserId())){
+                v = vi.inflate(R.layout.row_bill_self_layout, null);
+            } else {
+                v = vi.inflate(R.layout.row_bill_layout, null);
+            }
         }
+        if(!billList.isEmpty() && billList.size() > 0){
 
-        ButterKnife.bind(this, convertView);
-        BalancePresenter presenter = new BalancePresenter();
-
-        billName.setText(bill.getTitle());
-        billAmount.setText(bill.getAmount());
-        Glide.with(context)
-                .load(Uri.parse(presenter.getImageUrlByUserId(bill.getOwnerId())))
-                .into(imageView);
-
-
-
-        return convertView;
+            if (bill != null) {
+                TextView tv1 = v.findViewById(R.id.billName);
+                TextView tv2 = v.findViewById(R.id.billAmount);
+                CircleImageView iv = v.findViewById(R.id.billUserImage);
+                if (tv1 != null) {
+                    tv1.setText(bill.getTitle());
+                }
+                if(tv2 != null) {
+                    tv2.setText(bill.getAmount());
+                }
+                if (iv != null) {
+                    BalancePresenter presenter = new BalancePresenter();
+                    Glide.with(context)
+                            .load(Uri.parse(presenter.getImageUrlByUserId(bill.getOwnerId())))
+                            .into(iv);
+                }
+            }
+        }
+        return v;
     }
 
     @Override
-    public int getViewTypeCount() {
-        return 2;
+    public int getCount() {
+        return this.billList.size();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if(billList.get(position).getOwnerId() == UserInfo.getInstance().getUserId()){
-            return 0;
-        }
-        return 1;
+    public void updateData(List<Bill> billList){
+        this.billList = billList;
     }
 }

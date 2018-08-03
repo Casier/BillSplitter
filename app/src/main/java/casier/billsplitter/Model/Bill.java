@@ -1,40 +1,28 @@
 package casier.billsplitter.Model;
 
-import java.util.Date;
-
 public class Bill {
 
-    private String id;
-    private Date date;
-    private String title;
-    private String ownerId;
+    private String date; // Savec as String because Firebase don't support Java Data format
     private String amount; // Saved as String because Firebase don't support float
+    private String ownerId;
+    private String title;
 
     public Bill(){
 
     }
 
-    public Bill(String id, Date date, String title, String ownerId, String amount){
-        this.id = id;
+    public Bill(String date, String amount, String ownerId, String title){
         this.date = date;
-        this.title = title;
-        this.ownerId = ownerId;
         this.amount = amount;
+        this.ownerId = ownerId;
+        this.title = title;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
