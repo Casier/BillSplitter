@@ -24,7 +24,7 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
         ButterKnife.bind(this);
-        presenter = new LoginPresenter(this, new LoginInteractor());
+        presenter = new LoginPresenter(this);
 
     }
 

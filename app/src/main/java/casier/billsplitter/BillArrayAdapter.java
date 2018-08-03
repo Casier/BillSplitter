@@ -2,12 +2,13 @@ package casier.billsplitter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.ArrayAdapter;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class BillArrayAdapter extends ArrayAdapter<String> {
+public class BillArrayAdapter extends ArrayAdapter<String> implements View.OnClickListener{
 
     HashMap<String, Integer> mIdMap = new HashMap<>();
 
@@ -42,4 +43,8 @@ public class BillArrayAdapter extends ArrayAdapter<String> {
         return true;
     }
 
+    @Override
+    public void onClick(View view) {
+
+    }
 }

@@ -15,13 +15,11 @@ public class LoginPresenter {
 
     private LoginActivity loginActivity;
     private static final int RC_SIGN_IN = 2018;
-    private LoginInteractor loginInteractor;
 
     private GoogleSignInClient mGoogleSignInClient;
 
-    public LoginPresenter(LoginActivity loginActivity, LoginInteractor loginInteractor){
+    public LoginPresenter(LoginActivity loginActivity){
         this.loginActivity = loginActivity;
-        this.loginInteractor = loginInteractor;
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
