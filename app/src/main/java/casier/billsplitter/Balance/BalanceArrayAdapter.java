@@ -3,6 +3,7 @@ package casier.billsplitter.Balance;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,9 +60,14 @@ public class BalanceArrayAdapter extends ArrayAdapter<Bill> {
                 }
                 if (iv != null) {
                     BalancePresenter presenter = new BalancePresenter();
-                    Glide.with(context)
-                            .load(Uri.parse(presenter.getImageUrlByUserId(bill.getOwnerId())))
-                            .into(iv);
+                    try {
+                        Glide.with(context)
+                                .load(Uri.parse(presenter.getImageUrlByUserId(bill.getOwnerId())))
+                                .into(iv);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        Log.d("panda", "non");
+                    }
                 }
             }
         }

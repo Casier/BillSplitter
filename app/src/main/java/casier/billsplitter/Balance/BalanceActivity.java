@@ -3,6 +3,7 @@ package casier.billsplitter.Balance;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.ListView;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class BalanceActivity extends Activity {
     }
 
     public void notifyAdapter(List<Bill> billList){
+        Log.d("panda", "ui");
         if(adapter == null){
             adapter = new BalanceArrayAdapter(this, R.layout.row_bill_layout , billList);
             billsList.setAdapter(adapter);
