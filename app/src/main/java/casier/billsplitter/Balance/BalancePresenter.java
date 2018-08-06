@@ -1,6 +1,5 @@
 package casier.billsplitter.Balance;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,12 +20,26 @@ public class BalancePresenter {
     private FirebaseDatabase mDatabase;
     private BalanceActivity balanceActivity;
     private List<Bill> billList = new ArrayList<>();
-    private String url;
     private Map<String, String> usersImageUrl = new HashMap<>();
+    private boolean billsLoaded = false;
+    private boolean usersLoaded = false;
 
-    public BalancePresenter(BalanceActivity balanceActivity) {
+    public BalancePresenter(final BalanceActivity balanceActivity) {
         this.balanceActivity = balanceActivity;
         getBills();
+        getImagesUrl();
+
+        new Thread(new Runnable() {
+            public void run() {
+                while (!billsLoaded && !usersLoaded) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ignored) {
+                    }
+                }
+                balanceActivity.notifyAdapter(billList);
+            }
+        }).start();
     }
 
     public BalancePresenter(){
@@ -73,6 +86,28 @@ public class BalancePresenter {
         return url;
     }
 
+    private void getImagesUrl(){
+        mDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = mDatabase.getReference("users");
+        Query queryUrl = myRef;
+        queryUrl.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    User u = snapshot.getValue(User.class);
+                    if(u != null){
+                        usersImageUrl.put(snapshot.getKey(), u.getUserPhotoUrl());
+                    }
+                }
+                usersLoaded = true;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
     public void getBills(){
         mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference myRef = mDatabase.getReference("bills");
@@ -83,42 +118,8 @@ public class BalancePresenter {
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Bill b = snapshot.getValue(Bill.class);
                     if(b != null) billList.add(b);
-                    String id = b .getOwnerId();
-                    mDatabase = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = mDatabase.getReference("users");
-                    Query queryBills = myRef.orderByChild(id);
-                    queryBills.addChildEventListener(new ChildEventListener() {
-                        @Override
-                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                            User u = dataSnapshot.getValue(User.class);
-                            String key = dataSnapshot.getKey();
-                            if(u != null && key != "") {
-                                usersImageUrl.put(key, u.getUserPhotoUrl());
-                                balanceActivity.notifyAdapter(billList);
-                            }
-                        }
-
-                        @Override
-                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                        }
-
-                        @Override
-                        public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                        }
-
-                        @Override
-                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
                 }
+                billsLoaded = true;
             }
 
             @Override
@@ -127,4 +128,5 @@ public class BalancePresenter {
             }
         });
     }
+
 }
