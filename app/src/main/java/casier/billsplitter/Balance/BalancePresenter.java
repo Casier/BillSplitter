@@ -12,76 +12,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import casier.billsplitter.DataObserver;
+import casier.billsplitter.DataSubject;
 import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.User;
 
-public class BalancePresenter {
+public class BalancePresenter implements DataSubject {
 
     private FirebaseDatabase mDatabase;
     private BalanceActivity balanceActivity;
     private List<Bill> billList = new ArrayList<>();
-    private Map<String, String> usersImageUrl = new HashMap<>();
-    private boolean billsLoaded = false;
-    private boolean usersLoaded = false;
+    private Map<String, String> usersImageUrl;
+    private ArrayList<DataObserver> mObservers;
 
     public BalancePresenter(final BalanceActivity balanceActivity) {
         this.balanceActivity = balanceActivity;
+        usersImageUrl = new HashMap<>();
+        mObservers = new ArrayList<>();
         getBills();
         getImagesUrl();
-
-        new Thread(new Runnable() {
-            public void run() {
-                while (!billsLoaded && !usersLoaded) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ignored) {
-                    }
-                }
-                balanceActivity.notifyAdapter(billList);
-            }
-        }).start();
+        registerObserver(balanceActivity);
     }
 
-    public BalancePresenter(){
-
-    }
-
-    public String getImageUrlByUserId(String userId) throws InterruptedException {
-        /*final CountDownLatch done = new CountDownLatch(1);
-        mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = mDatabase.getReference("users");
-        Query queryUser = myRef.child(userId);
-        queryUser.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d("panda", "oui");
-                User u = dataSnapshot.getValue(User.class);
-                url = u.getUserPhotoUrl();
-                done.countDown();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.d("panda", "ouii");
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.d("panda", "ouiii");
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                Log.d("panda", "oui2");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("panda", "oui4");
-            }
-        });
-        done.await();*/
-        // TODO : s'assurer que la Map soit remplie avant de load l'interface
+    public String getImageUrlByUserId(String userId) {
         String url = usersImageUrl.get(userId);
         return url;
     }
@@ -99,7 +52,7 @@ public class BalancePresenter {
                         usersImageUrl.put(snapshot.getKey(), u.getUserPhotoUrl());
                     }
                 }
-                usersLoaded = true;
+                notifyObservers();
             }
 
             @Override
@@ -119,7 +72,7 @@ public class BalancePresenter {
                     Bill b = snapshot.getValue(Bill.class);
                     if(b != null) billList.add(b);
                 }
-                billsLoaded = true;
+                notifyObservers();
             }
 
             @Override
@@ -129,4 +82,24 @@ public class BalancePresenter {
         });
     }
 
+    @Override
+    public void registerObserver(DataObserver dataObserver) {
+        if(!mObservers.contains(dataObserver)){
+            mObservers.add(dataObserver);
+        }
+    }
+
+    @Override
+    public void removeObserver(DataObserver dataObserver) {
+        if(mObservers.contains(dataObserver)){
+            mObservers.remove(dataObserver);
+        }
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(DataObserver d : mObservers){
+            d.onDataChange(billList, usersImageUrl);
+        }
+    }
 }
