@@ -6,4 +6,6 @@
     <color name="background_material_dark">#ffde03</color>
     <color name="red">#ff0000</color>
     <color name="blue">#1100ff</color>
+    <color name="red_bill">#fc4646</color>
+    <color name="green_bill">#25f179</color>
 </resources>

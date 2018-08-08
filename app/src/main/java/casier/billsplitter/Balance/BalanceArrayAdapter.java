@@ -1,83 +1,81 @@
 package casier.billsplitter.Balance;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.UserInfo;
 import casier.billsplitter.R;
-import de.hdodenhof.circleimageview.CircleImageView;
 
-public class BalanceArrayAdapter extends ArrayAdapter<Bill> {
+public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Context context;
-    private List<Bill> billList;
-    private BalancePresenter presenter;
+    private final List<Bill> billList;
+    private int itemRessource;
 
     public BalanceArrayAdapter(@NonNull Context context, int resource, List<Bill> billList) {
-        super(context, resource);
+
+        this.itemRessource = resource;
         this.context = context;
         this.billList = billList;
     }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        Bill bill = billList.get(position);
+            RecyclerView.ViewHolder viewHolder = null;
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
+            Log.d("panda", "viewType : " + Integer.toString(viewType));
 
-        View v = convertView;
-        if (v == null) {
-            LayoutInflater vi;
-            vi = LayoutInflater.from(context);
-            if(bill.getOwnerId().equals(UserInfo.getInstance().getUserId())){
-                v = vi.inflate(R.layout.row_bill_self_layout, null);
-            } else {
-                v = vi.inflate(R.layout.row_bill_layout, null);
+            switch (viewType) {
+                case 1 :
+                    View billSelfView = inflater.inflate(R.layout.row_bill_self_layout, parent, false);
+                    viewHolder = new BillsSelfHolder(parent.getContext(), billSelfView);
+                    break;
+                case 2:
+                    View billView = inflater.inflate(R.layout.row_bill_layout, parent, false);
+                    viewHolder = new BillsHolder(parent.getContext(), billView);
+                    break;
+            }
+
+            return viewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            switch (holder.getItemViewType()){
+                case 1:
+                    BillsSelfHolder billsSelfHolder = (BillsSelfHolder) holder;
+                    billsSelfHolder.bindBill(billList.get(position));
+                    break;
+                case 2:
+                    BillsHolder billsHolder = (BillsHolder) holder;
+                    billsHolder.bindBill(billList.get(position));
+                    break;
             }
         }
-        if(!billList.isEmpty() && billList.size() > 0){
 
-            if (bill != null) {
-                TextView tv1 = v.findViewById(R.id.billName);
-                TextView tv2 = v.findViewById(R.id.billAmount);
-                CircleImageView iv = v.findViewById(R.id.billUserImage);
-                if (tv1 != null) {
-                    tv1.setText(bill.getTitle());
-                }
-                if(tv2 != null) {
-                    tv2.setText(bill.getAmount());
-                }
-                if (iv != null) {
-                    Glide.with(context)
-                            .load(Uri.parse(presenter.getImageUrlByUserId(bill.getOwnerId())))
-                            .into(iv);
+
+
+        @Override
+            public int getItemViewType(int position) {
+                if (billList.get(position).getOwnerId().equals(UserInfo.getInstance().getUserId())) {
+                    return 1;
+                } else {
+                    return 2;
                 }
             }
-        }
-        return v;
-    }
 
-    @Override
-    public int getCount() {
-        return this.billList.size();
+            @Override
+            public int getItemCount() {
+                return this.billList.size();
+            }
     }
-
-    public void updateData(List<Bill> billList){
-        this.billList = billList;
-    }
-
-    public void setPresenter(BalancePresenter presenter){
-        this.presenter = presenter;
-    }
-}

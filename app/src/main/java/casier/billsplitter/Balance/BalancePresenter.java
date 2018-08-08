@@ -16,6 +16,7 @@ import casier.billsplitter.DataObserver;
 import casier.billsplitter.DataSubject;
 import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.User;
+import casier.billsplitter.Utils;
 
 public class BalancePresenter implements DataSubject {
 
@@ -34,11 +35,6 @@ public class BalancePresenter implements DataSubject {
         registerObserver(balanceActivity);
     }
 
-    public String getImageUrlByUserId(String userId) {
-        String url = usersImageUrl.get(userId);
-        return url;
-    }
-
     private void getImagesUrl(){
         mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference myRef = mDatabase.getReference("users");
@@ -52,6 +48,7 @@ public class BalancePresenter implements DataSubject {
                         usersImageUrl.put(snapshot.getKey(), u.getUserPhotoUrl());
                     }
                 }
+                Utils.getInstance().setUsersImageUrl(usersImageUrl);
                 notifyObservers();
             }
 
