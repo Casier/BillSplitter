@@ -42,17 +42,6 @@ public class BalanceActivity extends Activity implements DataObserver{
         billsList.setLayoutManager(layoutManager);
         billsList.setHasFixedSize(true);
         billsList.setAdapter(adapter);
-
-
-        /*
-        if(adapter == null){
-            adapter = new BalanceArrayAdapter(this, R.layout.row_bill_layout , billList);
-            billsList.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-        } else {
-            adapter.updateData(billList);
-        }
-        adapter.notifyDataSetChanged(); */
     }
 
     @Override

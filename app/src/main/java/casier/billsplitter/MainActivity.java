@@ -33,16 +33,12 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -76,8 +72,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
-
-    List<String> currency = Arrays.asList("$", "€", "¥", "₡", "£", "₪", "₦", "₱", "zł", "₲", "฿", "₴", "₫");
 
     private BillArrayAdapter adapter;
 
@@ -128,35 +122,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         FirebaseUser currentUser = mAuth.getCurrentUser();
     }
 
-    /* TODO Remove this
-        it's just a how to for SELECT in Firebase
-     */
-    private void displayInfo(){
-        mDatabase.getReference("users").orderByChild(UserInfo.getInstance().getUserId()).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                User u = dataSnapshot.getValue(User.class);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                dataSnapshot.getValue();
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);switch (requestCode) {
@@ -186,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             // Check if the line contains at least 2 numbers
                             String pattern = "(.*[0-9]{2,}.*)";
                             if(line.getValue().matches(pattern)){
+                                List<String> currency = Utils.getInstance().getCurrency();
                                 for(int c = 0; c < currency.size(); c++){
                                     if (line.getValue().contains(currency.get(c))){
                                         list.add(line.getValue());
@@ -281,11 +247,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if(value != null) {
             billAmount = dialog.getCustomView().findViewById(R.id.bill_amount);
-            billAmount.setText(convertToFloatedString(value)); // TODO traiter le texte pour afficher uniquement la valeur sans la currency
+            billAmount.setText(convertToFloatedString(value));
         }
     }
 
     private String convertToFloatedString(String value){
+        List<String> currency = Utils.getInstance().getCurrency();
         for(int i = 0; i < currency.size(); i++){
             value = value.replace(currency.get(i), "");
         }
