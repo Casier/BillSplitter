@@ -34,5 +34,10 @@
         <item name="menu_colorPressed">@color/colorAccent</item>
     </style>
 
+    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:colorAccent">@android:color/black</item>
+    </style>
+
 
 </resources>

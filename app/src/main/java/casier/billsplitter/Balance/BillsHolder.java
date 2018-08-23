@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -19,7 +20,7 @@ public class BillsHolder extends RecyclerView.ViewHolder implements View.OnClick
     private final TextView billName;
     private final TextView billAmount;
     private final CircleImageView userImage;
-
+    public RelativeLayout layout;
 
     public BillsHolder(Context context, View itemView) {
         super(itemView);
@@ -29,6 +30,7 @@ public class BillsHolder extends RecyclerView.ViewHolder implements View.OnClick
         this.billName = itemView.findViewById(R.id.billName);
         this.billAmount = itemView.findViewById(R.id.billAmount);
         this.userImage = itemView.findViewById(R.id.billUserImage);
+        this.layout = itemView.findViewById(R.id.globalContainer);
 
         itemView.setOnClickListener(this);
     }

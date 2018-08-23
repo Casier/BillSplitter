@@ -79,17 +79,14 @@ public class BalancePresenter implements DataSubject {
         });
     }
 
+    public void removeBill(Bill bill){
+        // TODO : Remove bill from database
+    }
+
     @Override
     public void registerObserver(DataObserver dataObserver) {
         if(!mObservers.contains(dataObserver)){
             mObservers.add(dataObserver);
-        }
-    }
-
-    @Override
-    public void removeObserver(DataObserver dataObserver) {
-        if(mObservers.contains(dataObserver)){
-            mObservers.remove(dataObserver);
         }
     }
 
