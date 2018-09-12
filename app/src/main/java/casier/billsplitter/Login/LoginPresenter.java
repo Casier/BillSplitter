@@ -9,7 +9,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
-import casier.billsplitter.Model.UserInfo;
+import casier.billsplitter.Model.LocalUser;
 
 public class LoginPresenter {
 
@@ -59,9 +59,9 @@ public class LoginPresenter {
     }
 
     public void updateUserInfo(GoogleSignInAccount account) {
-        UserInfo.getInstance().setUserEmail(account.getEmail());
-        UserInfo.getInstance().setUserId(account.getId());
-        UserInfo.getInstance().setUserName(account.getDisplayName());
-        UserInfo.getInstance().setUserPhotoUrl(account.getPhotoUrl());
+        LocalUser.getInstance().setUserEmail(account.getEmail());
+        LocalUser.getInstance().setUserId(account.getId());
+        LocalUser.getInstance().setUserName(account.getDisplayName());
+        LocalUser.getInstance().setUserPhotoUrl(account.getPhotoUrl());
     }
 }

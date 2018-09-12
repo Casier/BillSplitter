@@ -11,7 +11,7 @@ import com.google.android.gms.common.SignInButton;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import casier.billsplitter.Balance.BalanceActivity;
+import casier.billsplitter.AddBill.AddBillActivity;
 import casier.billsplitter.R;
 
 public class LoginActivity extends Activity {
@@ -56,7 +56,7 @@ public class LoginActivity extends Activity {
     }
 
     public void loginSuccess(){
-        Intent mainIntent = new Intent(this, BalanceActivity.class); // Test sur BalanceActivity
+        Intent mainIntent = new Intent(this, AddBillActivity.class); // Test sur BalanceActivity
         mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         this.startActivity(mainIntent);
     }

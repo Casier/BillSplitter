@@ -1,18 +1,24 @@
 package casier.billsplitter.Balance;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 import casier.billsplitter.Model.Bill;
-import casier.billsplitter.Model.UserInfo;
+import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.R;
+import casier.billsplitter.Utils;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -20,6 +26,7 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final List<Bill> billList;
     private int itemRessource;
     private OnItemClicked onClick;
+    private Utils utils;
 
     public interface OnItemClicked {
         void onClick(int position);
@@ -30,6 +37,8 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.itemRessource = resource;
         this.context = context;
         this.billList = billList;
+
+        this.utils = Utils.getInstance();
     }
 
     @Override
@@ -37,8 +46,6 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         RecyclerView.ViewHolder viewHolder = null;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-
-        Log.d("panda", "viewType : " + Integer.toString(viewType));
 
         View v;
 
@@ -55,7 +62,6 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         return viewHolder;
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
@@ -83,10 +89,9 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-
     @Override
     public int getItemViewType(int position) {
-        if (billList.get(position).getOwnerId().equals(UserInfo.getInstance().getUserId())) {
+        if (billList.get(position).getOwnerId().equals(LocalUser.getInstance().getUserId())) {
             return 1;
         } else {
             return 2;
@@ -106,5 +111,78 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return billList.get(position);
     }
 
+    public class BillsSelfHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
 
+        private Context context;
+        private final TextView billName;
+        private final TextView billAmount;
+        private final CircleImageView userImage;
+        public RelativeLayout layout;
+
+
+        public BillsSelfHolder(Context context, View itemView) {
+            super(itemView);
+
+            this.context = context;
+
+            this.billName = itemView.findViewById(R.id.billName);
+            this.billAmount = itemView.findViewById(R.id.billAmount);
+            this.userImage = itemView.findViewById(R.id.billUserImage);
+            this.layout = itemView.findViewById(R.id.selfContainer);
+
+            itemView.setOnClickListener(this);
+        }
+
+        public void bindBill(Bill bill){
+
+            billName.setText(bill.getTitle());
+            billAmount.setText(bill.getAmount() + "$");
+
+            Glide.with(context)
+                    .load(Uri.parse(Utils.getInstance().getImageUrlByUserId(bill.getOwnerId())))
+                    .into(userImage);
+        }
+
+        @Override
+        public void onClick(View view) {
+
+        }
+    }
+
+    public class BillsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private Context context;
+        private final TextView billName;
+        private final TextView billAmount;
+        private final CircleImageView userImage;
+        public RelativeLayout layout;
+
+        public BillsHolder(Context context, View itemView) {
+            super(itemView);
+
+            this.context = context;
+
+            this.billName = itemView.findViewById(R.id.billName);
+            this.billAmount = itemView.findViewById(R.id.billAmount);
+            this.userImage = itemView.findViewById(R.id.billUserImage);
+            this.layout = itemView.findViewById(R.id.globalContainer);
+
+            itemView.setOnClickListener(this);
+        }
+
+        public void bindBill(Bill bill){
+
+            billName.setText(bill.getTitle());
+            billAmount.setText(bill.getAmount() + "$");
+
+            Glide.with(context)
+                    .load(Uri.parse(Utils.getInstance().getImageUrlByUserId(bill.getOwnerId())))
+                    .into(userImage);
+        }
+
+        @Override
+        public void onClick(View view) {
+
+        }
+    }
 }

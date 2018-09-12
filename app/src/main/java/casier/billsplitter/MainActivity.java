@@ -15,6 +15,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
@@ -47,7 +48,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.User;
-import casier.billsplitter.Model.UserInfo;
+import casier.billsplitter.Model.LocalUser;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private EditText billAmount;
     private EditText billName;
+    private RecyclerView usersPicker;
 
     private static final String TAG = "MainActivityDebug";
     private static final int REQUEST_WRITE_PERMISSION = 20;
@@ -105,14 +107,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         scanList.setOnItemClickListener(this);
 
         User user = new User();
-        user.setUserEmail(UserInfo.getInstance().getUserEmail());
-        user.setUserName(UserInfo.getInstance().getUserName());
-        user.setUserPhotoUrl(UserInfo.getInstance().getUserPhotoUrl().toString());
+        user.setUserEmail(LocalUser.getInstance().getUserEmail());
+        user.setUserName(LocalUser.getInstance().getUserName());
+        user.setUserPhotoUrl(LocalUser.getInstance().getUserPhotoUrl().toString());
 
         mDatabase= FirebaseDatabase.getInstance();
         DatabaseReference myRef = mDatabase.getReference("users");
 
-        myRef.child(UserInfo.getInstance().getUserId()).setValue(user);
+        myRef.child(LocalUser.getInstance().getUserId()).setValue(user);
     }
 
 
@@ -237,7 +239,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         Date date = Calendar.getInstance().getTime();
                         billAmount = dialog.getCustomView().findViewById(R.id.bill_amount);
                         billName = dialog.getCustomView().findViewById(R.id.bill_name);
-                        Bill bill = new Bill(date.toString(), billName.getText().toString(), UserInfo.getInstance().getUserId(), convertToFloatedString(billAmount.getText().toString()));
+                        usersPicker = dialog.getCustomView().findViewById(R.id.usersPicker);
+                        Bill bill = new Bill(date.toString(), billName.getText().toString(), LocalUser.getInstance().getUserId(), convertToFloatedString(billAmount.getText().toString()), null);
 
                         DatabaseReference myRef = mDatabase.getReference("bills");
                         myRef.child(date.toString()).setValue(bill);

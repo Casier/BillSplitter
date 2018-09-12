@@ -39,5 +39,10 @@
         <item name="android:colorAccent">@android:color/black</item>
     </style>
 
+    <style name="CustomEditText" parent="android:Widget.EditText">
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+    </style>
+
 
 </resources>

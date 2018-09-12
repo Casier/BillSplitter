@@ -2,19 +2,19 @@ package casier.billsplitter.Model;
 
 import android.net.Uri;
 
-public class UserInfo {
+public class LocalUser {
 
     private String user_id;
     private String user_email;
     private String user_name;
     private Uri user_photo_url;
 
-    private static UserInfo mInstance = null;
+    private static LocalUser mInstance = null;
 
-    public static UserInfo getInstance(){
+    public static LocalUser getInstance(){
         if(mInstance == null)
         {
-            mInstance = new UserInfo();
+            mInstance = new LocalUser();
         }
         return mInstance;
     }

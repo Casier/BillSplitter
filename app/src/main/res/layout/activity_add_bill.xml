@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/screenTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Ajouter une facture"
+        android:textAlignment="center"
+        android:textColor="@color/blue"
+        android:textSize="22sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="50dp"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/screenTitle"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
+
+        <TextView
+            android:id="@+id/bill_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nom de la facture"
+            android:labelFor="@+id/bill_name"
+            android:textColor="@color/colorAccent" />
+
+        <EditText
+            android:id="@+id/bill_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bill_name_label"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/colorAccent"
+            android:inputType="textNoSuggestions"
+            android:backgroundTint="@color/colorAccent"/>
+
+        <TextView
+            android:id="@+id/bill_amount_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bill_name"
+            android:layout_marginTop="18dp"
+            android:text="Montant"
+            android:labelFor="@+id/bill_amount"
+            android:textColor="@color/colorAccent" />
+
+        <EditText
+            android:id="@+id/bill_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bill_amount_label"
+            android:layout_marginTop="4dp"
+            android:inputType="numberDecimal"
+            android:textColor="@color/colorAccent"
+            android:backgroundTint="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/bill_user_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bill_amount"
+            android:layout_marginTop="18dp"
+            android:text="Utilisateurs"
+            android:textColor="@color/colorAccent"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/users_picker"
+            android:layout_width="match_parent"
+            android:layout_marginTop="18dp"
+            android:layout_below="@+id/bill_user_label"
+            android:layout_above="@+id/bill_add"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/bill_add"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ajouter"/>
+    </RelativeLayout>
+
+</RelativeLayout>

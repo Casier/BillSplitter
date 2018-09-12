@@ -12,27 +12,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import casier.billsplitter.DataObserver;
-import casier.billsplitter.DataSubject;
 import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.User;
-import casier.billsplitter.Utils;
+import casier.billsplitter.UserDataObserver;
 
-public class BalancePresenter implements DataSubject {
+public class BalancePresenter {
 
     private FirebaseDatabase mDatabase;
     private BalanceActivity balanceActivity;
     private List<Bill> billList = new ArrayList<>();
-    private Map<String, String> usersImageUrl;
-    private ArrayList<DataObserver> mObservers;
+    private Map<String, User> usersList;
+    private ArrayList<UserDataObserver> mObservers;
 
     public BalancePresenter(final BalanceActivity balanceActivity) {
         this.balanceActivity = balanceActivity;
-        usersImageUrl = new HashMap<>();
+        usersList = new HashMap<>();
         mObservers = new ArrayList<>();
         getBills();
         getImagesUrl();
-        registerObserver(balanceActivity);
     }
 
     private void getImagesUrl(){
@@ -45,11 +42,9 @@ public class BalancePresenter implements DataSubject {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     User u = snapshot.getValue(User.class);
                     if(u != null){
-                        usersImageUrl.put(snapshot.getKey(), u.getUserPhotoUrl());
+                        usersList.put(snapshot.getKey(), u);
                     }
                 }
-                Utils.getInstance().setUsersImageUrl(usersImageUrl);
-                notifyObservers();
             }
 
             @Override
@@ -58,6 +53,7 @@ public class BalancePresenter implements DataSubject {
             }
         });
     }
+
     public void getBills(){
         mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference myRef = mDatabase.getReference("bills");
@@ -69,7 +65,6 @@ public class BalancePresenter implements DataSubject {
                     Bill b = snapshot.getValue(Bill.class);
                     if(b != null) billList.add(b);
                 }
-                notifyObservers();
             }
 
             @Override
@@ -83,17 +78,26 @@ public class BalancePresenter implements DataSubject {
         // TODO : Remove bill from database
     }
 
-    @Override
-    public void registerObserver(DataObserver dataObserver) {
-        if(!mObservers.contains(dataObserver)){
-            mObservers.add(dataObserver);
-        }
-    }
 
-    @Override
-    public void notifyObservers() {
-        for(DataObserver d : mObservers){
-            d.onDataChange(billList, usersImageUrl);
+    public List<String> getNames() {
+
+        List<String> names = new ArrayList<>();
+
+        Map<String, Float> usersBalance = new HashMap<>();
+        for(Bill b : billList){
+            Float amount = Float.parseFloat(b.getAmount());
+            if(usersBalance.containsKey(b.getOwnerId())){
+                usersBalance.put(b.getOwnerId(), (usersBalance.get(b.getOwnerId()) + amount));
+            } else {
+                usersBalance.put(b.getOwnerId(), amount);
+            }
         }
+
+        for (Map.Entry<String, Float> entry : usersBalance.entrySet())
+        {
+            System.out.println(entry.getKey() + "/" + entry.getValue());
+        }
+
+        return names;
     }
 }

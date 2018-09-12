@@ -10,26 +10,30 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import casier.billsplitter.DataObserver;
 import casier.billsplitter.Model.Bill;
-import casier.billsplitter.Model.UserInfo;
+import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.R;
 import casier.billsplitter.Utils;
 
-public class BalanceActivity extends Activity implements DataObserver, BalanceArrayAdapter.OnItemClicked{
+public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnItemClicked{
 
-    @BindView(R.id.billsList)
-    RecyclerView billsList;
+    @BindView(R.id.billsList) RecyclerView billsList;
+
+    @BindView(R.id.userPay) TextView userPay;
+
+    @BindView(R.id.userPaid) Text userPayed;
 
     private BalancePresenter presenter;
     private BalanceArrayAdapter adapter;
@@ -57,20 +61,13 @@ public class BalanceActivity extends Activity implements DataObserver, BalanceAr
     }
 
     @Override
-    public void onDataChange(List<Bill> billList, Map<String, String> usersImageUrl) {
-        if(billList.size() > 0 && usersImageUrl.size() > 0){
-            notifyAdapter(billList);
-        }
-    }
-
-    @Override
     public void onClick(int position) {
         final Bill bill = adapter.getItemAtPosition(position);
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this, R.style.MyDialogTheme);
         dialog.setTitle(bill.getTitle());
         dialog.setMessage(bill.getAmount());
         dialog.setPositiveButton("Ok", null);
-        if(bill.getOwnerId().equals(UserInfo.getInstance().getUserId())){
+        if(bill.getOwnerId().equals(LocalUser.getInstance().getUserId())){
             dialog.setNegativeButton("Supprimer", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
