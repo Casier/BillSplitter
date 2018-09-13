@@ -33,7 +33,7 @@ public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        RecyclerView.ViewHolder viewHolder = new UserPickerHolder(parent.getContext(), inflater.inflate(R.layout.row_user_picker, parent, false));
+        RecyclerView.ViewHolder viewHolder = new UserPickerHolder(inflater.inflate(R.layout.row_user_picker, parent, false));
 
         return viewHolder;
     }
@@ -55,15 +55,12 @@ public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public class UserPickerHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        private Context context;
         private final TextView userName;
         private final CheckBox checkBox;
 
 
-        public UserPickerHolder(Context context, View itemView){
+        public UserPickerHolder(View itemView){
             super(itemView);
-
-            this.context = context;
             this.userName = itemView.findViewById(R.id.user_name);
             this.checkBox = itemView.findViewById(R.id.user_selected);
             itemView.setOnClickListener(this);
