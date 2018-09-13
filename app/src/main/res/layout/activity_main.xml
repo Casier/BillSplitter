@@ -48,7 +48,7 @@
             android:id="@+id/fabCamera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/camera_24"
+            android:src="@drawable/camera_icon"
             fab:menu_colorNormal="#0336FF"
             fab:fab_size="mini" />
 

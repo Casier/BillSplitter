@@ -28,4 +28,5 @@ public class AddBillPresenter {
         DatabaseReference myRef = mDatabase.getReference("bills");
         myRef.child(date.toString()).setValue(newBill);
     }
+
 }

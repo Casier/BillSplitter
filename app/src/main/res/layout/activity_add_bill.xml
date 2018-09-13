@@ -2,7 +2,8 @@
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="12dp">
 
     <TextView
         android:id="@+id/screenTitle"
@@ -50,21 +51,37 @@
             android:labelFor="@+id/bill_amount"
             android:textColor="@color/colorAccent" />
 
-        <EditText
-            android:id="@+id/bill_amount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <RelativeLayout
+            android:id="@+id/relative_amount"
             android:layout_below="@+id/bill_amount_label"
-            android:layout_marginTop="4dp"
-            android:inputType="numberDecimal"
-            android:textColor="@color/colorAccent"
-            android:backgroundTint="@color/colorAccent" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/bill_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/bill_amount_camera"
+                android:layout_marginTop="4dp"
+                android:inputType="numberDecimal"
+                android:textColor="@color/colorAccent"
+                android:backgroundTint="@color/colorAccent" />
+
+            <ImageView
+                android:id="@+id/bill_amount_camera"
+                android:layout_alignParentEnd="true"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/camera_icon" />
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/bill_user_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/bill_amount"
+            android:layout_below="@+id/relative_amount"
             android:layout_marginTop="18dp"
             android:text="Utilisateurs"
             android:textColor="@color/colorAccent"/>

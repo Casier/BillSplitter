@@ -126,7 +126,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);switch (requestCode) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
             case REQUEST_WRITE_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     takePicture();
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     for (int index = 0; index < textBlocks.size(); index++) {
                         TextBlock tBlock = textBlocks.valueAt(index);
                         for (Text line : tBlock.getComponents()) {
-                            // Check if the line contains at least 2 numbers
+                            // Check if the  line contains at least 2 numbers
                             String pattern = "(.*[0-9]{2,}.*)";
                             if(line.getValue().matches(pattern)){
                                 List<String> currency = Utils.getInstance().getCurrency();
