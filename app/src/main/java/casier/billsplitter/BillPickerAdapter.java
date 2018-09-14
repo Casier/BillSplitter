@@ -12,14 +12,20 @@ import java.util.List;
 
 public class BillPickerAdapter extends RecyclerView.Adapter implements View.OnClickListener {
 
+    public interface OnItemClickListener {
+        void onItemClick(String line);
+    }
+
     private Context context;
     private int resource;
     private final List<String> amount;
+    private final OnItemClickListener listener;
 
-    public BillPickerAdapter(Context context, int resource, List<String> amount){
+    public BillPickerAdapter(Context context, int resource, List<String> amount, OnItemClickListener listener){
         this.context = context;
         this.resource = resource;
         this.amount = amount;
+        this.listener = listener;
     }
     @NonNull
     @Override
@@ -33,7 +39,7 @@ public class BillPickerAdapter extends RecyclerView.Adapter implements View.OnCl
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         BillPickerHolder billPickerHolder = (BillPickerHolder) holder;
-        billPickerHolder.bindAmount(amount.get(position));
+        billPickerHolder.bindAmount(amount.get(position), listener);
     }
 
     @Override
@@ -46,24 +52,24 @@ public class BillPickerAdapter extends RecyclerView.Adapter implements View.OnCl
 
     }
 
-    public class BillPickerHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class BillPickerHolder extends RecyclerView.ViewHolder{
 
         private final TextView billAmount;
 
         public BillPickerHolder(View itemView){
             super(itemView);
             this.billAmount = itemView.findViewById(R.id.ocr_bill_amount);
-            itemView.setOnClickListener(this);
 
         }
 
-        public void bindAmount(String amount){
+        public void bindAmount(final String amount, final OnItemClickListener listener){
             billAmount.setText(amount);
-        }
-
-        @Override
-        public void onClick(View view) {
-
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onItemClick(amount);
+                }
+            });
         }
     }
 }

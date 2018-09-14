@@ -1,19 +1,20 @@
 package casier.billsplitter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import casier.billsplitter.AddBill.AddBillActivity;
 
-public class BillPickerActivity extends AppCompatActivity implements View.OnClickListener {
+public class BillPickerActivity extends AppCompatActivity implements BillPickerAdapter.OnItemClickListener {
 
     @BindView(R.id.recycler_pick_bill)
     RecyclerView recycler;
@@ -31,7 +32,7 @@ public class BillPickerActivity extends AppCompatActivity implements View.OnClic
 
         lines = getIntent().getStringArrayListExtra("lines");
 
-        adapter = new BillPickerAdapter(this, R.layout.row_bill_picker, lines);
+        adapter = new BillPickerAdapter(this, R.layout.row_bill_picker, lines, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recycler.setLayoutManager(layoutManager);
         recycler.setHasFixedSize(true);
@@ -40,7 +41,13 @@ public class BillPickerActivity extends AppCompatActivity implements View.OnClic
     }
 
     @Override
-    public void onClick(View view) {
-
+    public void onItemClick(String line) {
+        line = line.replace(",", ".").replace(" ", "");
+        for(String s : Utils.getInstance().getCurrency()){
+            line = line.replace(s, "");
+        }
+        Intent intent = new Intent(this, AddBillActivity.class);
+        intent.putExtra("line", line);
+        startActivity(intent);
     }
 }

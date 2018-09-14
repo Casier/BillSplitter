@@ -83,6 +83,11 @@ public class AddBillActivity extends Activity implements UserDataObserver {
         mUtils.registerUserObserver(this);
         detector = new TextRecognizer.Builder(getApplicationContext()).build();
 
+        Intent intent = getIntent();
+        if(intent.hasExtra("line")){
+            billAmount.setText(intent.getStringExtra("line"));
+        }
+
         //region Using custom font
         AssetManager am = getApplicationContext().getAssets();
         Typeface typeface = Typeface.createFromAsset(am,"fonts/HelloMilkMoney.ttf");
