@@ -166,7 +166,12 @@ public class AddBillActivity extends Activity implements UserDataObserver {
                                 List<String> currency = Utils.getInstance().getCurrency();
                                 for(int c = 0; c < currency.size(); c++){
                                     if(!list.contains(line.getValue()))
-                                        list.add(line.getValue());
+                                    {
+                                        if(line.getValue().length() < 8)
+                                        {
+                                            list.add(line.getValue());
+                                        }
+                                    }
                                 }
                             }
                         }
