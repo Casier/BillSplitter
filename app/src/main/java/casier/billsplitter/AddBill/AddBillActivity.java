@@ -40,8 +40,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import casier.billsplitter.Balance.BalanceActivity;
 import casier.billsplitter.BillPickerActivity;
 import casier.billsplitter.BuildConfig;
+import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.Model.User;
 import casier.billsplitter.R;
 import casier.billsplitter.UserDataObserver;
@@ -118,7 +120,18 @@ public class AddBillActivity extends Activity implements UserDataObserver {
             }
         }
 
-        presenter.addBill(billName.getText().toString(), billAmount.getText().toString(), billUsersList);
+        // prevent crash in BalanceActivity when a bill is created without the LocalUser id setted
+        if((LocalUser.getInstance().getUserId()) != null && !LocalUser.getInstance().getUserId().isEmpty())
+        {
+            String amount = billAmount.getText().toString();
+            String name = billName.getText().toString();
+            if(amount.equals("") || name.equals(""))
+                return;
+
+            presenter.addBill(billName.getText().toString(), billAmount.getText().toString(), billUsersList);
+            Intent intent = new Intent(this, BalanceActivity.class);
+            startActivity(intent);
+        }
     }
 
     @OnClick(R.id.bill_amount_camera)

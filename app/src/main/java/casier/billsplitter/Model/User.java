@@ -2,6 +2,7 @@ package casier.billsplitter.Model;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class User {
@@ -62,5 +63,21 @@ public class User {
 
     public String getUserId(){
         return this.userId;
+    }
+
+    public void addToBalance(User paier, Float amount){
+        if(usersBalance == null)
+            usersBalance = new HashMap<>();
+
+        if(usersBalance.get(paier) == null){
+            usersBalance.put(paier, amount);
+        } else {
+            usersBalance.put(paier, usersBalance.get(paier) + amount);
+        }
+    }
+
+    public void clearBalance(){
+        if(usersBalance != null)
+            usersBalance.clear();
     }
 }

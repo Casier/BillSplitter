@@ -75,12 +75,14 @@ public class Utils implements UserDataSubject, BillDataSubject {
         queryBills.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                billList.clear();
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Bill b = snapshot.getValue(Bill.class);
                     if(b != null) {
                         billList.add(b);
                     }
                 }
+                notifyBillObservers();
             }
 
             @Override
@@ -88,6 +90,28 @@ public class Utils implements UserDataSubject, BillDataSubject {
 
             }
         });
+    }
+
+    public void deleteBill(Bill bill){
+        mDatabase = FirebaseDatabase.getInstance();
+        mDatabase.getReference("bills").child(bill.getDate()).removeValue();
+    }
+
+    public User getUserById(String id){
+        for(User u : userList){
+            if(u.getUserId().equals(id))
+                return u;
+        }
+        return null;
+    }
+
+    public List<User> getUserBalanceSummaryList(){
+        List<User> userBalanceSummaryList = new ArrayList<>();
+        for(User u : userList){
+            if(u.getUsersBalance().size() > 0)
+                userBalanceSummaryList.add(u);
+        }
+        return userBalanceSummaryList;
     }
 
     public List<User> getUserList(){
@@ -143,4 +167,5 @@ public class Utils implements UserDataSubject, BillDataSubject {
             o.onBillDataChange(billList);
         }
     }
+
 }

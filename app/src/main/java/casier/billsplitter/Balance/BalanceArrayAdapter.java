@@ -22,11 +22,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private Context context;
     private final List<Bill> billList;
-    private int itemRessource;
     private OnItemClicked onClick;
-    private Utils utils;
+    private Utils mUtils;
+    private int itemRessource;
+    private Context context;
 
     public interface OnItemClicked {
         void onClick(int position);
@@ -37,8 +37,8 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.itemRessource = resource;
         this.context = context;
         this.billList = billList;
-
-        this.utils = Utils.getInstance();
+        this.mUtils = Utils.getInstance();
+        setHasStableIds(true);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public RelativeLayout layout;
 
 
-        public BillsSelfHolder(Context context, View itemView) {
+        BillsSelfHolder(Context context, View itemView) {
             super(itemView);
 
             this.context = context;
@@ -133,13 +133,13 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             itemView.setOnClickListener(this);
         }
 
-        public void bindBill(Bill bill){
+        void bindBill(Bill bill){
 
             billName.setText(bill.getTitle());
             billAmount.setText(bill.getAmount() + "$");
 
             Glide.with(context)
-                    .load(Uri.parse(Utils.getInstance().getImageUrlByUserId(bill.getOwnerId())))
+                    .load(Uri.parse(mUtils.getInstance().getImageUrlByUserId(bill.getOwnerId())))
                     .into(userImage);
         }
 
@@ -157,7 +157,7 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private final CircleImageView userImage;
         public RelativeLayout layout;
 
-        public BillsHolder(Context context, View itemView) {
+        BillsHolder(Context context, View itemView) {
             super(itemView);
 
             this.context = context;
@@ -170,7 +170,7 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             itemView.setOnClickListener(this);
         }
 
-        public void bindBill(Bill bill){
+        void bindBill(Bill bill){
 
             billName.setText(bill.getTitle());
             billAmount.setText(bill.getAmount() + "$");

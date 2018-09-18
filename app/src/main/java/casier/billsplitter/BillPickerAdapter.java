@@ -56,7 +56,7 @@ public class BillPickerAdapter extends RecyclerView.Adapter implements View.OnCl
 
         private final TextView billAmount;
 
-        public BillPickerHolder(View itemView){
+        BillPickerHolder(View itemView){
             super(itemView);
             this.billAmount = itemView.findViewById(R.id.ocr_bill_amount);
 

@@ -23,7 +23,7 @@ public class AddBillPresenter {
     public void addBill(String billName, String billAmount, List<String> billUsersList){
 
         Date date = Calendar.getInstance().getTime();
-        Bill newBill = new Bill(date.toString(), billName, LocalUser.getInstance().getUserId(), billAmount, billUsersList);
+        Bill newBill = new Bill(date.toString(), billAmount, LocalUser.getInstance().getUserId(), billName, billUsersList);
 
         DatabaseReference myRef = mDatabase.getReference("bills");
         myRef.child(date.toString()).setValue(newBill);
