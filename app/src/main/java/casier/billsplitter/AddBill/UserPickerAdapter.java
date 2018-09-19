@@ -1,4 +1,4 @@
-package casier.billsplitter;
+package casier.billsplitter.AddBill;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -14,6 +14,7 @@ import java.util.List;
 
 import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.Model.User;
+import casier.billsplitter.R;
 
 public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

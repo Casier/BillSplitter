@@ -41,13 +41,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import casier.billsplitter.Balance.BalanceActivity;
-import casier.billsplitter.BillPickerActivity;
 import casier.billsplitter.BuildConfig;
 import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.Model.User;
 import casier.billsplitter.R;
 import casier.billsplitter.UserDataObserver;
-import casier.billsplitter.UserPickerAdapter;
 import casier.billsplitter.Utils;
 
 public class AddBillActivity extends Activity implements UserDataObserver {
@@ -101,6 +99,12 @@ public class AddBillActivity extends Activity implements UserDataObserver {
         usersPicker.setLayoutManager(layoutManager);
         usersPicker.setHasFixedSize(true);
         usersPicker.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mUtils.removeUserObserver(this);
     }
 
     @Override

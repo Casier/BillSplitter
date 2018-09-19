@@ -25,7 +25,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import casier.billsplitter.AddBill.AddBillActivity;
 import casier.billsplitter.BillDataObserver;
-import casier.billsplitter.DialogUserAdapter;
 import casier.billsplitter.Model.Balance;
 import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.User;
@@ -73,11 +72,6 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
         fab.setOnClickListener(this);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
     public void initializeBalanceArrayAdapter(){
         balanceArrayAdapter = new BalanceArrayAdapter(this, R.layout.row_bill_layout, mUtils.getBillList());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -85,6 +79,13 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
         billRecycler.setHasFixedSize(true);
         billRecycler.setAdapter(balanceArrayAdapter);
         balanceArrayAdapter.setOnClick(BalanceActivity.this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mUtils.removeBillObserver(this);
+        mUtils.removeUserObserver(this);
     }
 
     @Override

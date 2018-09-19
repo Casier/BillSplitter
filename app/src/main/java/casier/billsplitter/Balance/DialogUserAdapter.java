@@ -1,4 +1,4 @@
-package casier.billsplitter;
+package casier.billsplitter.Balance;
 
 import android.content.Context;
 import android.net.Uri;
@@ -12,6 +12,8 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import casier.billsplitter.R;
+import casier.billsplitter.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DialogUserAdapter extends RecyclerView.Adapter {

@@ -18,13 +18,9 @@
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="ocr"/>
+
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/YellowBlue">
-        </activity>
-        <activity
-            android:name=".BillPickerActivity"
+            android:name=".AddBill.BillPickerActivity"
             android:label="@string/app_name"
             android:theme="@style/YellowBlue">
         </activity>

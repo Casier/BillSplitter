@@ -1,4 +1,4 @@
-package casier.billsplitter;
+package casier.billsplitter.AddBill;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
+
+import casier.billsplitter.R;
 
 public class BillPickerAdapter extends RecyclerView.Adapter implements View.OnClickListener {
 

@@ -1,4 +1,4 @@
-package casier.billsplitter;
+package casier.billsplitter.AddBill;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import casier.billsplitter.AddBill.AddBillActivity;
+import casier.billsplitter.R;
+import casier.billsplitter.Utils;
 
 public class BillPickerActivity extends AppCompatActivity implements BillPickerAdapter.OnItemClickListener {
 
