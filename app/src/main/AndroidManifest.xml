@@ -30,6 +30,11 @@
             android:theme="@style/YellowBlue">
         </activity>
         <activity
+            android:name=".Account.AccountActivity"
+            android:label="@string/app_name"
+            android:theme="@style/YellowBlue">
+        </activity>
+        <activity
             android:name=".AddBill.AddBillActivity"
             android:label="@string/app_name"
             android:theme="@style/YellowBlue">

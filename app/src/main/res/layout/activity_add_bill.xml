@@ -9,7 +9,6 @@
         android:id="@+id/screenTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:text="Ajouter une facture"
         android:textAlignment="center"
         android:textColor="@color/blue"

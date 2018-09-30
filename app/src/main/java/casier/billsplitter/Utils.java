@@ -1,5 +1,7 @@
 package casier.billsplitter;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -12,18 +14,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import casier.billsplitter.Model.Account;
 import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.User;
 
-public class Utils implements UserDataSubject, BillDataSubject {
+public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubject {
 
     private FirebaseDatabase mDatabase;
 
     private List<User> userList = new ArrayList<>();
     private List<Bill> billList = new ArrayList<>();
+    private List<Account> accountList = new ArrayList<>();
+
+    private Account selectedAccount;
 
     private ArrayList<UserDataObserver> mUserObservers = new ArrayList<>();
     private ArrayList<BillDataObserver> mBillObservers = new ArrayList<>();
+    private ArrayList<AccountDataObserver> mDataObservers = new ArrayList<>();
 
     private static Utils mInstance = null;
     private Map<String, String> usersImageUrl = new HashMap<>();
@@ -35,6 +42,7 @@ public class Utils implements UserDataSubject, BillDataSubject {
             mInstance = new Utils();
             mInstance.loadUsers();
             mInstance.loadBills();
+            mInstance.loadAccounts();
         }
         return mInstance;
     }
@@ -70,7 +78,7 @@ public class Utils implements UserDataSubject, BillDataSubject {
 
     private void loadBills(){
         mDatabase = FirebaseDatabase.getInstance();
-        Query queryBills = mDatabase.getReference("bills");
+        Query queryBills = mDatabase.getReference("accounts").child("accountName").child("bills");
 
         queryBills.addValueEventListener(new ValueEventListener() {
             @Override
@@ -83,6 +91,41 @@ public class Utils implements UserDataSubject, BillDataSubject {
                     }
                 }
                 notifyBillObservers();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loadAccounts(){
+        mDatabase = FirebaseDatabase.getInstance();
+        Query queryAccount = mDatabase.getReference("accounts");
+        queryAccount.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    List<Bill> accountBillList = new ArrayList<>();
+                    for(DataSnapshot billSnapshot : snapshot.getChildren()){
+                        if(billSnapshot.getKey().equals("bills")){
+                            Bill b = snapshot.getValue(Bill.class);
+                            if(b != null){
+                                accountBillList.add(b);
+                            }
+                        }
+                    }
+                    Account a = snapshot.getValue(Account.class);
+                    a.setAccountName(snapshot.getKey());
+                    a.setBills(accountBillList);
+
+                    Log.d("panda", "oui");
+                    if(a != null) {
+                        accountList.add(a);
+                    }
+                }
+                notifyAccountObservers();
             }
 
             @Override
@@ -120,6 +163,10 @@ public class Utils implements UserDataSubject, BillDataSubject {
 
     public List<Bill> getBillList(){
         return this.billList;
+    }
+
+    public List<Account> getAccountList(){
+        return this.accountList;
     }
 
     public List<String> getCurrency(){
@@ -168,4 +215,21 @@ public class Utils implements UserDataSubject, BillDataSubject {
         }
     }
 
+    @Override
+    public void registerAccountObserver(AccountDataObserver dataObserver) {
+        if(!mDataObservers.contains(dataObserver))
+            mDataObservers.add(dataObserver);
+    }
+
+    @Override
+    public void removeAccountObserver(AccountDataObserver dataObserver) {
+        if(mDataObservers.contains(dataObserver))
+            mDataObservers.remove(dataObserver);
+    }
+
+    @Override
+    public void notifyAccountObservers() {
+        for(AccountDataObserver o : mDataObservers)
+            o.onAccountDataChange(accountList);
+    }
 }

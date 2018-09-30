@@ -1,18 +1,26 @@
 package casier.billsplitter.Model;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.List;
 
 import casier.billsplitter.Utils;
 
 public class Account {
 
+    @Exclude
     private String accountName;
-    private List<String> accountUsersId;
-    private List<Bill> accountBills;
+    private List<String> usersId;
+    @Exclude
+    private List<Bill> bills;
 
-    public Account(String accountName, List<String> accountUsers){
-        this.accountName = accountName;
-        this.accountUsersId = accountUsers;
+    public Account(){
+
+    }
+
+    public Account(List<String> usersId, List<Bill> bills){
+        this.bills = bills;
+        this.usersId = usersId;
     }
 
     public String getAccountName() {
@@ -24,21 +32,21 @@ public class Account {
     }
 
     public List<String> getAccountUsers() {
-        return accountUsersId;
+        return usersId;
     }
 
     public void setAccountUsers(List<String> accountUsers) {
-        this.accountUsersId = accountUsers;
+        this.usersId = accountUsers;
     }
 
     public void addUserToAccount(User user){
-        if(!accountUsersId.contains(user.getUserId()))
-            accountUsersId.add(user.getUserId());
+        if(!usersId.contains(user.getUserId()))
+            usersId.add(user.getUserId());
     }
 
     public boolean removeUserToAccount(User user){
         boolean userBillFree = true;
-        if(accountUsersId.contains(user.getUserId())){
+        if(usersId.contains(user.getUserId())){
              for(Bill b : Utils.getInstance().getBillList()){
                  if(b.getUsersId().contains(user.getUserId()))
                      userBillFree = false;
@@ -46,8 +54,16 @@ public class Account {
         }
         if(userBillFree){
             // TODO : Supprimer l'utililsateur de la liste des utilisateurs de l'account
-            accountUsersId.remove(user.getUserId());
+            usersId.remove(user.getUserId());
         }
         return userBillFree;
+    }
+
+    public List<Bill> getBills() {
+        return bills;
+    }
+
+    public void setBills(List<Bill> bills) {
+        this.bills = bills;
     }
 }
