@@ -1,7 +1,5 @@
 package casier.billsplitter;
 
-import android.util.Log;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -57,10 +55,8 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     User u = snapshot.getValue(User.class);
                     u.setUserId(snapshot.getKey());
-                    if(u != null) {
-                        userList.add(u);
-                        usersImageUrl.put(snapshot.getKey(), u.getUserPhotoUrl());
-                    }
+                    userList.add(u);
+                    usersImageUrl.put(snapshot.getKey(), u.getUserPhotoUrl());
                 }
                 notifyUserObservers();
             }
@@ -110,20 +106,18 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
                     List<Bill> accountBillList = new ArrayList<>();
                     for(DataSnapshot billSnapshot : snapshot.getChildren()){
                         if(billSnapshot.getKey().equals("bills")){
-                            Bill b = snapshot.getValue(Bill.class);
-                            if(b != null){
-                                accountBillList.add(b);
+                            for(DataSnapshot snapshotBill: billSnapshot.getChildren()){
+                                Bill b = snapshotBill.getValue(Bill.class);
+                                if(b != null) {
+                                    billList.add(b);
+                                }
                             }
                         }
                     }
-                    Account a = snapshot.getValue(Account.class);
+                    Account a = new Account();
                     a.setAccountName(snapshot.getKey());
                     a.setBills(accountBillList);
-
-                    Log.d("panda", "oui");
-                    if(a != null) {
-                        accountList.add(a);
-                    }
+                    accountList.add(a);
                 }
                 notifyAccountObservers();
             }
