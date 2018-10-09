@@ -2,6 +2,7 @@ package casier.billsplitter.Account;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,11 @@ public class AccountPickerAdapter extends RecyclerView.Adapter {
     private Context context;
     private final List<Account> accountList;
     private int itemResource;
+    private OnItemClicked onClick;
+
+    public interface OnItemClicked{
+        void onClick(int position);
+    }
 
     public AccountPickerAdapter(Context context, int resource, List<Account> accountList){
         this.context = context;
@@ -36,8 +42,14 @@ public class AccountPickerAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         AccountPickerHolder accountPickerHolder = (AccountPickerHolder) holder;
+        ((AccountPickerHolder) holder).layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClick.onClick(position);
+            }
+        });
         accountPickerHolder.bindAccount(accountList.get(position));
     }
 
@@ -46,13 +58,19 @@ public class AccountPickerAdapter extends RecyclerView.Adapter {
         return accountList.size();
     }
 
+    public void setOnclick(OnItemClicked onClick){
+        this.onClick = onClick;
+    }
+
     public class AccountPickerHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final TextView accountName;
+        private final ConstraintLayout layout;
 
         public AccountPickerHolder(View itemView) {
             super(itemView);
             this.accountName = itemView.findViewById(R.id.account_name);
+            this.layout = itemView.findViewById(R.id.account_picker_layout);
             itemView.setOnClickListener(this);
         }
 

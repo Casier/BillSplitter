@@ -134,7 +134,6 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
 
         void bindBill(Bill bill){
-
             billName.setText(bill.getTitle());
             billAmount.setText(bill.getAmount() + "$");
 

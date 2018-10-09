@@ -11,13 +11,16 @@ import com.google.android.gms.common.SignInButton;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import casier.billsplitter.Balance.BalanceActivity;
+import casier.billsplitter.Account.AccountActivity;
 import casier.billsplitter.R;
+import casier.billsplitter.Utils;
 
 public class LoginActivity extends Activity {
 
     private LoginPresenter presenter;
     @BindView(R.id.sign_in_button) SignInButton signInButton;
+
+    private Utils mUtils;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -25,6 +28,7 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_signin);
         ButterKnife.bind(this);
         presenter = new LoginPresenter(this);
+        this.mUtils = Utils.getInstance();
 
     }
 
@@ -56,7 +60,7 @@ public class LoginActivity extends Activity {
     }
 
     public void loginSuccess(){
-        Intent mainIntent = new Intent(this, BalanceActivity.class); // Test sur BalanceActivity
+        Intent mainIntent = new Intent(this, AccountActivity.class); // Test sur BalanceActivity
         mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         this.startActivity(mainIntent);
     }

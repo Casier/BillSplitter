@@ -1,5 +1,7 @@
 package casier.billsplitter;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -37,9 +39,10 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
 
     public static Utils getInstance(){
         if(mInstance == null) {
+            Log.d("panda", "getInstance");
             mInstance = new Utils();
             mInstance.loadUsers();
-            mInstance.loadBills();
+            //mInstance.loadBills();
             mInstance.loadAccounts();
         }
         return mInstance;
@@ -108,7 +111,7 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
                         if(billSnapshot.getKey().equals("bills")){
                             for(DataSnapshot snapshotBill: billSnapshot.getChildren()){
                                 Bill b = snapshotBill.getValue(Bill.class);
-                                if(b != null) {
+                                if(b != null && !billList.contains(b)) {
                                     billList.add(b);
                                 }
                             }
@@ -127,6 +130,22 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
 
             }
         });
+    }
+
+    public Account getSelectedAccount(){
+        return this.selectedAccount;
+    }
+
+    public void setSelectedAccount(Account account){
+        this.selectedAccount = account;
+    }
+
+    public void addBill(Bill bill){
+        if(!billList.contains(bill)){
+            Log.d("panda", "addBill");
+                billList.add(bill);
+                notifyAccountObservers();
+        }
     }
 
     public void deleteBill(Bill bill){
@@ -223,6 +242,7 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
 
     @Override
     public void notifyAccountObservers() {
+        Log.d("panda", "notifyAccountObservers");
         for(AccountDataObserver o : mDataObservers)
             o.onAccountDataChange(accountList);
     }

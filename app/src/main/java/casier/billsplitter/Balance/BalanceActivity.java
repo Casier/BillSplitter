@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -73,6 +74,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     }
 
     public void initializeBalanceArrayAdapter(){
+        Log.d("panda", "initializeBalanceArrayAdapter");
         balanceArrayAdapter = new BalanceArrayAdapter(this, R.layout.row_bill_layout, mUtils.getBillList());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         billRecycler.setLayoutManager(layoutManager);

@@ -57,4 +57,12 @@ public class Bill {
     public List<String> getUsersId() { return this.usersId; }
 
     public void setUsersId(List<String> usersId) { this.usersId = usersId; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this.ownerId.equals(((Bill)obj).getOwnerId()) && this.date.equals(((Bill)obj).getDate()))
+            return true;
+
+        return false;
+    }
 }
