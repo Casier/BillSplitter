@@ -20,6 +20,8 @@ import casier.billsplitter.R;
 import casier.billsplitter.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+//TODO voir les notes
+
 public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<Bill> billList;

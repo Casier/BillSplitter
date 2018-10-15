@@ -9,7 +9,6 @@
         android:id="@+id/amount_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorAccent"
         android:textSize="23sp"
         android:textStyle="bold"
         android:text="Choisir un montant"/>

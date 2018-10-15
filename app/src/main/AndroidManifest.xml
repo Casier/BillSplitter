@@ -13,36 +13,31 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/YellowBlue">
+        android:theme="@style/AppTheme"
+        android:supportsRtl="true">
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="ocr"/>
 
         <activity
             android:name=".AddBill.BillPickerActivity"
-            android:label="@string/app_name"
-            android:theme="@style/YellowBlue">
+            android:label="@string/app_name">
         </activity>
         <activity
             android:name=".Balance.BalanceActivity"
-            android:label="@string/app_name"
-            android:theme="@style/YellowBlue">
+            android:label="@string/app_name">
         </activity>
         <activity
             android:name=".Account.AccountActivity"
-            android:label="@string/app_name"
-            android:theme="@style/YellowBlue">
+            android:label="@string/app_name">
         </activity>
         <activity
             android:name=".AddBill.AddBillActivity"
-            android:label="@string/app_name"
-            android:theme="@style/YellowBlue">
+            android:label="@string/app_name">
 
         </activity>
         <activity android:name=".Login.LoginActivity"
-            android:label="@string/app_name"
-            android:theme="@style/YellowBlue">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

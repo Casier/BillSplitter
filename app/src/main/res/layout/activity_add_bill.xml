@@ -27,8 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nom de la facture"
-            android:labelFor="@+id/bill_name"
-            android:textColor="@color/colorAccent" />
+            android:labelFor="@+id/bill_name" />
 
         <EditText
             android:id="@+id/bill_name"
@@ -36,9 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/bill_name_label"
             android:layout_marginTop="4dp"
-            android:textColor="@color/colorAccent"
-            android:inputType="textNoSuggestions"
-            android:backgroundTint="@color/colorAccent"/>
+            android:inputType="textNoSuggestions"/>
 
         <TextView
             android:id="@+id/bill_amount_label"
@@ -47,8 +44,7 @@
             android:layout_below="@+id/bill_name"
             android:layout_marginTop="18dp"
             android:text="Montant"
-            android:labelFor="@+id/bill_amount"
-            android:textColor="@color/colorAccent" />
+            android:labelFor="@+id/bill_amount" />
 
         <RelativeLayout
             android:id="@+id/relative_amount"
@@ -62,9 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/bill_amount_camera"
                 android:layout_marginTop="4dp"
-                android:inputType="numberDecimal"
-                android:textColor="@color/colorAccent"
-                android:backgroundTint="@color/colorAccent" />
+                android:inputType="numberDecimal" />
 
             <ImageView
                 android:id="@+id/bill_amount_camera"
@@ -82,8 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/relative_amount"
             android:layout_marginTop="18dp"
-            android:text="Utilisateurs"
-            android:textColor="@color/colorAccent"/>
+            android:text="Utilisateurs"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/users_picker"

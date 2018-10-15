@@ -8,13 +8,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/centerShim"
+        android:padding="10dp"
         android:divider="@android:color/transparent"/>
 
     <View
         android:id="@+id/centerShim"
         android:layout_height="5dp"
         android:layout_width="match_parent"
-        android:background="@color/colorAccent"
         android:elevation="5dp"
         android:layout_centerVertical="true"/>
 

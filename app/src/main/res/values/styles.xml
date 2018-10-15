@@ -1,48 +1,9 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppTheme" parent="Theme.AppCompat">
+        <item name="colorAccent">@color/green_bill</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
-
-    <style name="YellowBlue" parent="AppTheme" >
-        <item name="colorPrimaryDark">@color/colorPrimary</item>
-        <item name="android:colorBackground">@color/background_material_dark</item>
-        <item name="android:textColorPrimary">@android:color/black</item>
-        <item name="android:textColorSecondary">@android:color/black</item>
-        <item name="android:navigationBarColor">@color/colorPrimary</item>
-        <item name="android:textColorSecondaryInverse">@color/colorAccent</item>
-        <item name="android:colorForeground">@android:color/black</item>
-
-        <item name="fab_size">normal</item>
-        <item name="fab_shadowColor">#66000000</item>
-        <item name="fab_colorNormal">@color/colorAccent</item>
-        <item name="fab_colorPressed">@color/colorAccent</item>
-        <item name="menu_colorNormal">@color/colorAccent</item>
-        <item name="menu_colorPressed">@color/colorAccent</item>
-    </style>
-
-    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="android:colorAccent">@android:color/black</item>
-    </style>
-
-    <style name="CustomEditText" parent="android:Widget.EditText">
-        <item name="colorControlNormal">@color/colorAccent</item>
-        <item name="colorControlActivated">@color/colorAccent</item>
-    </style>
 
 
 </resources>

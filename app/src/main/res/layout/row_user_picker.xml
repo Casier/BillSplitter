@@ -19,8 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_toEndOf="@+id/user_picture"
-        android:layout_centerVertical="true"
-        android:textColor="@color/colorAccent" />
+        android:layout_centerVertical="true" />
 
     <CheckBox
         android:id="@+id/user_selected"

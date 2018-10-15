@@ -13,7 +13,6 @@
         android:layout_centerVertical="true"
         android:gravity="center_vertical"
         android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:textColor="@color/colorAccent"/>
+        android:paddingRight="5dp"/>
 
 </RelativeLayout>
