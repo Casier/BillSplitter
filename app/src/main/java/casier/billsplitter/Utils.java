@@ -1,7 +1,5 @@
 package casier.billsplitter;
 
-import android.util.Log;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -39,7 +37,6 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
 
     public static Utils getInstance(){
         if(mInstance == null) {
-            Log.d("panda", "getInstance");
             mInstance = new Utils();
             mInstance.loadUsers();
             //mInstance.loadBills();

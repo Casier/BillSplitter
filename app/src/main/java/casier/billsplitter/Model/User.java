@@ -80,4 +80,12 @@ public class User {
         if(usersBalance != null)
             usersBalance.clear();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this.userId.equals(((User)obj).getUserId()))
+            return true;
+
+        return false;
+    }
 }
