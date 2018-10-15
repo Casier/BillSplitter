@@ -21,7 +21,7 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
     private FirebaseDatabase mDatabase;
 
     private List<User> userList = new ArrayList<>();
-    private List<Bill> billList = new ArrayList<>();
+    //private List<Bill> billList = new ArrayList<>();
     private List<Account> accountList = new ArrayList<>();
 
     private Account selectedAccount;
@@ -39,7 +39,6 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
         if(mInstance == null) {
             mInstance = new Utils();
             mInstance.loadUsers();
-            //mInstance.loadBills();
             mInstance.loadAccounts();
         }
         return mInstance;
@@ -72,30 +71,6 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
         return usersImageUrl.get(userId);
     }
 
-    private void loadBills(){
-        mDatabase = FirebaseDatabase.getInstance();
-        Query queryBills = mDatabase.getReference("accounts").child("accountName").child("bills");
-
-        queryBills.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                billList.clear();
-                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    Bill b = snapshot.getValue(Bill.class);
-                    if(b != null) {
-                        billList.add(b);
-                    }
-                }
-                notifyBillObservers();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
     private void loadAccounts(){
         mDatabase = FirebaseDatabase.getInstance();
         Query queryAccount = mDatabase.getReference("accounts");
@@ -104,19 +79,27 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     List<Bill> accountBillList = new ArrayList<>();
+                    List<String> accountUsers = new ArrayList<>();
                     for(DataSnapshot billSnapshot : snapshot.getChildren()){
                         if(billSnapshot.getKey().equals("bills")){
                             for(DataSnapshot snapshotBill: billSnapshot.getChildren()){
                                 Bill b = snapshotBill.getValue(Bill.class);
-                                if(b != null && !billList.contains(b)) {
-                                    billList.add(b);
-                                }
+                                if(b != null && !accountBillList.contains(b))
+                                    accountBillList.add(b);
+                            }
+                        }
+                        if(billSnapshot.getKey().equals("usersId")){
+                            for(DataSnapshot snapshotBill: billSnapshot.getChildren()){
+                                String s = snapshotBill.getValue(String.class);
+                                if(s != null && !accountUsers.contains(s))
+                                    accountUsers.add(s);
                             }
                         }
                     }
                     Account a = new Account();
                     a.setAccountName(snapshot.getKey());
                     a.setBills(accountBillList);
+                    a.setAccountUsers(accountUsers);
                     accountList.add(a);
                 }
                 notifyAccountObservers();
@@ -135,18 +118,20 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
 
     public void setSelectedAccount(Account account){
         this.selectedAccount = account;
+        accountList.clear();
+        mInstance.loadAccounts();
     }
 
     public void addBill(Bill bill){
-        if(!billList.contains(bill)){
-                billList.add(bill);
-                notifyAccountObservers();
+        if(!selectedAccount.getBills().contains(bill)){
+            selectedAccount.getBills().add(bill);
+            notifyAccountObservers();
         }
     }
 
     public void deleteBill(Bill bill){
-        if(billList.contains(bill)){
-            billList.remove(bill);
+        if(selectedAccount.getBills().contains(bill)){
+            selectedAccount.getBills().remove(bill);
             mDatabase = FirebaseDatabase.getInstance();
             mDatabase.getReference("accounts").child(selectedAccount.getAccountName()).child("bills").child(bill.getDate()).removeValue();
             notifyBillObservers();
@@ -161,21 +146,12 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
         return null;
     }
 
-    public List<User> getUserBalanceSummaryList(){
-        List<User> userBalanceSummaryList = new ArrayList<>();
-        for(User u : userList){
-            if(u.getUsersBalance().size() > 0)
-                userBalanceSummaryList.add(u);
-        }
-        return userBalanceSummaryList;
-    }
-
     public List<User> getUserList(){
         return this.userList;
     }
 
     public List<Bill> getBillList(){
-        return this.billList;
+        return this.selectedAccount.getBills();
     }
 
     public List<Account> getAccountList(){
@@ -224,7 +200,7 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
     @Override
     public void notifyBillObservers() {
         for(BillDataObserver o : mBillObservers){
-            o.onBillDataChange(billList);
+            o.onBillDataChange(selectedAccount.getBills());
         }
     }
 

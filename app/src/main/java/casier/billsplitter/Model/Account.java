@@ -2,6 +2,7 @@ package casier.billsplitter.Model;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import casier.billsplitter.Utils;
@@ -12,7 +13,7 @@ public class Account {
     private String accountName;
     private List<String> usersId;
     @Exclude
-    private List<Bill> bills;
+    private List<Bill> bills = new ArrayList<>();
 
     public Account(){
 

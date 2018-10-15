@@ -2,11 +2,11 @@ package casier.billsplitter.Account;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -65,7 +65,7 @@ public class AccountPickerAdapter extends RecyclerView.Adapter {
     public class AccountPickerHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final TextView accountName;
-        private final ConstraintLayout layout;
+        private final RelativeLayout layout;
 
         public AccountPickerHolder(View itemView) {
             super(itemView);

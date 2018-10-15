@@ -40,7 +40,7 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
 
         adapter = new AccountPickerAdapter(this, R.layout.row_account_picker, mUtils.getAccountList());
         adapter.setOnclick(AccountActivity.this);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 4);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         accountPicker.setLayoutManager(layoutManager);
         accountPicker.setHasFixedSize(true);
         accountPicker.setAdapter(adapter);

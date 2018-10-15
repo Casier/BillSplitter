@@ -71,7 +71,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     }
 
     public void initializeBalanceArrayAdapter(){
-        balanceArrayAdapter = new BalanceArrayAdapter(this, R.layout.row_bill_layout, mUtils.getBillList());
+        balanceArrayAdapter = new BalanceArrayAdapter(this, R.layout.row_bill_layout, mUtils.getSelectedAccount().getBills());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         billRecycler.setLayoutManager(layoutManager);
         billRecycler.setHasFixedSize(true);
@@ -161,20 +161,22 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
 
         for(User payer : mUtils.getUserList()){
             for(User paid : mUtils.getUserList()){
-                if(payer.getUsersBalance().containsKey(paid)){
-                    Float payerAmount = payer.getUsersBalance().get(paid);
-                    Float paidAmount  = paid.getUsersBalance().get(payer);
+                if(payer.getUsersBalance() !=  null){
+                    if(payer.getUsersBalance().containsKey(paid)){
+                        Float payerAmount = payer.getUsersBalance().get(paid);
+                        Float paidAmount  = paid.getUsersBalance().get(payer);
 
-                    if(payerAmount != null && paidAmount != null){
-                        if(payerAmount > paidAmount){
-                            payer.getUsersBalance().put(paid, payerAmount - paidAmount);
-                            paid.getUsersBalance().remove(payer);
-                        } else if (payerAmount.equals(paidAmount)){
-                            payer.getUsersBalance().remove(paid);
-                            paid.getUsersBalance().remove(payer);
-                        } else {
-                            paid.getUsersBalance().put(payer, paidAmount - payerAmount);
-                            payer.getUsersBalance().remove(paid);
+                        if(payerAmount != null && paidAmount != null){
+                            if(payerAmount > paidAmount){
+                                payer.getUsersBalance().put(paid, payerAmount - paidAmount);
+                                paid.getUsersBalance().remove(payer);
+                            } else if (payerAmount.equals(paidAmount)){
+                                payer.getUsersBalance().remove(paid);
+                                paid.getUsersBalance().remove(payer);
+                            } else {
+                                paid.getUsersBalance().put(payer, paidAmount - payerAmount);
+                                payer.getUsersBalance().remove(paid);
+                            }
                         }
                     }
                 }
@@ -206,6 +208,6 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     @Override
     public void onBillDataChange(List<Bill> billList) {
         balanceArrayAdapter.notifyDataSetChanged();
-        //doTheBalance();
+        doTheBalance();
     }
 }

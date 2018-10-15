@@ -1,6 +1,7 @@
 package casier.billsplitter.AddBill;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
@@ -10,23 +11,29 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.Model.User;
 import casier.billsplitter.R;
+import casier.billsplitter.Utils;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
-    private final List<User> userList;
+    private final List<String> userList;
     private int itemResource;
     private SparseBooleanArray itemStateArray = new SparseBooleanArray();
+    private Utils mUtils;
 
-    public UserPickerAdapter(Context context, int resource, List<User> userList){
+    public UserPickerAdapter(Context context, int resource, List<String> userList){
         this.context = context;
         this.userList = userList;
         this.itemResource = resource;
+        this.mUtils = Utils.getInstance();
     }
 
 
@@ -42,7 +49,7 @@ public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         UserPickerHolder userPickerHolder = (UserPickerHolder) holder;
-        userPickerHolder.bindUser(userList.get(position));
+        userPickerHolder.bindUser(mUtils.getUserById(userList.get(position)));
     }
 
     @Override
@@ -58,12 +65,14 @@ public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         private final TextView userName;
         private final CheckBox checkBox;
+        private final CircleImageView userImage;
 
 
         public UserPickerHolder(View itemView){
             super(itemView);
             this.userName = itemView.findViewById(R.id.user_name);
             this.checkBox = itemView.findViewById(R.id.user_selected);
+            this.userImage = itemView.findViewById(R.id.user_picture);
             itemView.setOnClickListener(this);
             checkBox.setOnClickListener(this);
         }
@@ -76,6 +85,10 @@ public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             } else {
                 itemStateArray.put(getAdapterPosition(), false);
             }
+
+            Glide.with(context)
+                    .load(Uri.parse(user.getUserPhotoUrl()))
+                    .into(userImage);
         }
 
         @Override

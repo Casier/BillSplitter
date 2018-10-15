@@ -94,7 +94,7 @@ public class AddBillActivity extends Activity implements UserDataObserver {
         //screenTitle.setTypeface(typeface);
         //endregion
 
-        adapter = new UserPickerAdapter(this, R.layout.row_user_picker, mUtils.getUserList());
+        adapter = new UserPickerAdapter(this, R.layout.row_user_picker, mUtils.getSelectedAccount().getAccountUsers());
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         usersPicker.setLayoutManager(layoutManager);
         usersPicker.setHasFixedSize(true);
@@ -124,13 +124,19 @@ public class AddBillActivity extends Activity implements UserDataObserver {
             }
         }
 
-        // prevent crash in BalanceActivity when a bill is created without the LocalUser id setted
         if((LocalUser.getInstance().getUserId()) != null && !LocalUser.getInstance().getUserId().isEmpty())
         {
             String amount = billAmount.getText().toString();
             String name = billName.getText().toString();
-            if(amount.equals("") || name.equals(""))
+            if(amount.equals("")){
+                Toast.makeText(this, "Ajoutez un montant à la facture", Toast.LENGTH_SHORT).show();
                 return;
+            }
+
+            if(name.equals("")){
+                Toast.makeText(this, "Ajoutez un nom à la facture", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             presenter.addBill(billName.getText().toString(), billAmount.getText().toString(), billUsersList);
             Intent intent = new Intent(this, BalanceActivity.class);
