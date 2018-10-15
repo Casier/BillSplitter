@@ -55,7 +55,6 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     private BalanceArrayAdapter balanceArrayAdapter;
     private BalanceSummaryAdapter balanceSummaryAdapter;
     private Utils mUtils;
-    private List<Bill> billList;
     private List<Balance> balanceList;
 
     @Override
@@ -67,7 +66,6 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
         mUtils = Utils.getInstance();
         mUtils.registerBillObserver(this);
         mUtils.registerUserObserver(this);
-        billList = mUtils.getBillList();
         initializeBalanceArrayAdapter();
         doTheBalance();
         fab.setOnClickListener(this);
@@ -93,7 +91,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     @Override
     public void onClick(final int position) {
 
-        Bill clickedBill = billList.get(position);
+        Bill clickedBill = mUtils.getBillList().get(position);
 
         final Dialog dialog = new Dialog(this, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -119,15 +117,13 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
         deleteBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mUtils.deleteBill(billList.get(position));
-                billList.remove(position);
-                balanceArrayAdapter .notifyDataSetChanged();
+                mUtils.deleteBill(mUtils.getBillList().get(position));
                 dialog.dismiss();
             }
         });
 
         Glide.with(this)
-                .load(Uri.parse(mUtils.getImageUrlByUserId(billList.get(position).getOwnerId())))
+                .load(Uri.parse(mUtils.getImageUrlByUserId(mUtils.getBillList().get(position).getOwnerId())))
                 .into(userImage);
         dialog.show();
     }
@@ -145,7 +141,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
         for(User u : mUtils.getUserList())
             u.clearBalance();
 
-        for(Bill b : billList){
+        for(Bill b : mUtils.getBillList()){
             if(b.getUsersId() != null)
             {
                 for(String s : b.getUsersId()){

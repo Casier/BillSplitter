@@ -142,15 +142,18 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
 
     public void addBill(Bill bill){
         if(!billList.contains(bill)){
-            Log.d("panda", "addBill");
                 billList.add(bill);
                 notifyAccountObservers();
         }
     }
 
     public void deleteBill(Bill bill){
-        mDatabase = FirebaseDatabase.getInstance();
-        mDatabase.getReference("bills").child(bill.getDate()).removeValue();
+        if(billList.contains(bill)){
+            billList.remove(bill);
+            mDatabase = FirebaseDatabase.getInstance();
+            mDatabase.getReference("accounts").child(selectedAccount.getAccountName()).child("bills").child(bill.getDate()).removeValue();
+            notifyBillObservers();
+        }
     }
 
     public User getUserById(String id){
@@ -242,7 +245,6 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
 
     @Override
     public void notifyAccountObservers() {
-        Log.d("panda", "notifyAccountObservers");
         for(AccountDataObserver o : mDataObservers)
             o.onAccountDataChange(accountList);
     }
