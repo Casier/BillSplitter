@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/account_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:text="Nom du compte"/>
+
+    <EditText
+        android:id="@+id/account_name"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_below="@+id/account_name_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textNoSuggestions"/>
+
+    <TextView
+        android:id="@+id/account_user_list_label"
+        android:padding="12dp"
+        android:layout_below="@+id/account_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choix des utilisateurs"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/account_user_picker_recycler"
+        android:padding="12dp"
+        android:layout_below="@+id/account_user_list_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/button_create_account"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:elevation="00dp"
+        android:background="@color/grey_front"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text"
+        android:text="Créer le compte"/>
+
+</RelativeLayout>

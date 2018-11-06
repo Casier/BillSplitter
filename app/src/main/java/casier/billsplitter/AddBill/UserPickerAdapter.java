@@ -18,24 +18,20 @@ import java.util.List;
 import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.Model.User;
 import casier.billsplitter.R;
-import casier.billsplitter.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
-    private final List<String> userList;
     private int itemResource;
     private SparseBooleanArray itemStateArray = new SparseBooleanArray();
-    private Utils mUtils;
+    private List<User> userList;
 
-    public UserPickerAdapter(Context context, int resource, List<String> userList){
+    public UserPickerAdapter(Context context, int resource, List<User> userList){
         this.context = context;
         this.userList = userList;
         this.itemResource = resource;
-        this.mUtils = Utils.getInstance();
     }
-
 
     @NonNull
     @Override
@@ -49,7 +45,7 @@ public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         UserPickerHolder userPickerHolder = (UserPickerHolder) holder;
-        userPickerHolder.bindUser(mUtils.getUserById(userList.get(position)));
+        userPickerHolder.bindUser(userList.get(position));
     }
 
     @Override
@@ -93,6 +89,7 @@ public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         @Override
         public void onClick(View view) {
+            view.clearFocus();
             int adapterPosition = getAdapterPosition();
             if (!itemStateArray.get(adapterPosition, false)) {
                 checkBox.setChecked(true);

@@ -60,9 +60,6 @@ public class Bill {
 
     @Override
     public boolean equals(Object obj) {
-        if(this.ownerId.equals(((Bill)obj).getOwnerId()) && this.date.equals(((Bill)obj).getDate()))
-            return true;
-
-        return false;
+        return this.ownerId.equals(((Bill) obj).getOwnerId()) && this.date.equals(((Bill) obj).getDate());
     }
 }

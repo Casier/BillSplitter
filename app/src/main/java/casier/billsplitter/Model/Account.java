@@ -9,7 +9,6 @@ import casier.billsplitter.Utils;
 
 public class Account {
 
-    @Exclude
     private String accountName;
     private List<String> usersId;
     @Exclude
@@ -21,6 +20,11 @@ public class Account {
 
     public Account(List<String> usersId, List<Bill> bills){
         this.bills = bills;
+        this.usersId = usersId;
+    }
+
+    public Account(String accountName, List<String> usersId){
+        this.accountName = accountName;
         this.usersId = usersId;
     }
 
@@ -60,11 +64,26 @@ public class Account {
         return userBillFree;
     }
 
+    public void addBill(Bill b){
+        if(!bills.contains(b))
+            bills.add(b);
+    }
+
+    public void removeBill(Bill b){
+        if(bills.contains(b))
+            bills.remove(b);
+    }
+
     public List<Bill> getBills() {
         return bills;
     }
 
     public void setBills(List<Bill> bills) {
         this.bills = bills;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.accountName.equals(((Account) obj).accountName) && this.usersId.equals(((Account) obj).usersId);
     }
 }

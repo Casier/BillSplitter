@@ -1,7 +1,9 @@
 package casier.billsplitter;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -21,7 +23,6 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
     private FirebaseDatabase mDatabase;
 
     private List<User> userList = new ArrayList<>();
-    //private List<Bill> billList = new ArrayList<>();
     private List<Account> accountList = new ArrayList<>();
 
     private Account selectedAccount;
@@ -42,6 +43,20 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
             mInstance.loadAccounts();
         }
         return mInstance;
+    }
+
+    public void addUserIfNew(GoogleSignInAccount account){
+        boolean accountAlreadyExists = false;
+        for(User u : userList){
+            if(u.getUserEmail().equals(account.getEmail()))
+                accountAlreadyExists = true;
+        }
+
+        if(!accountAlreadyExists){
+            DatabaseReference reference = mDatabase.getReference("users");
+            User user = new User(account.getEmail(), account.getDisplayName(), account.getPhotoUrl().toString());
+            reference.child(account.getId()).setValue(user);
+        }
     }
 
     private void loadUsers(){
@@ -100,7 +115,8 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
                     a.setAccountName(snapshot.getKey());
                     a.setBills(accountBillList);
                     a.setAccountUsers(accountUsers);
-                    accountList.add(a);
+                    if(!accountList.contains(a))
+                        accountList.add(a);
                 }
                 notifyAccountObservers();
             }
@@ -122,20 +138,46 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
         mInstance.loadAccounts();
     }
 
+    public void createAccount(String accountName, List<User> userList){
+        if(!accountList.contains(accountName)){
+            List<String> usersId = new ArrayList<>();
+            for(User u : userList)
+                    usersId.add(u.getUserId());
+
+            DatabaseReference reference = mDatabase.getReference("accounts");
+            reference.child(accountName).child("usersId").setValue(usersId);
+        }
+    }
+
     public void addBill(Bill bill){
         if(!selectedAccount.getBills().contains(bill)){
             selectedAccount.getBills().add(bill);
+            for(Account a : accountList){
+                if(a.equals(selectedAccount))
+                    a.addBill(bill);
+            }
             notifyAccountObservers();
+            notifyBillObservers();
         }
     }
 
     public void deleteBill(Bill bill){
         if(selectedAccount.getBills().contains(bill)){
             selectedAccount.getBills().remove(bill);
+            for(Account a : accountList){
+                if(a.equals(selectedAccount))
+                    a.removeBill(bill);
+            }
             mDatabase = FirebaseDatabase.getInstance();
             mDatabase.getReference("accounts").child(selectedAccount.getAccountName()).child("bills").child(bill.getDate()).removeValue();
             notifyBillObservers();
         }
+    }
+
+    public void deleteAccount(Account account){
+        mDatabase = FirebaseDatabase.getInstance();
+        mDatabase.getReference("accounts").child(account.getAccountName()).removeValue();
+        notifyAccountObservers();
     }
 
     public User getUserById(String id){
@@ -220,5 +262,15 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
     public void notifyAccountObservers() {
         for(AccountDataObserver o : mDataObservers)
             o.onAccountDataChange(accountList);
+    }
+
+    public Account getAccountByName(String name){
+        for(Account account : accountList){
+            if(account.getAccountName().equals(name)){
+                accountList.remove(account);
+                return account;
+            }
+        }
+        return null;
     }
 }

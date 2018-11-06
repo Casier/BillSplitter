@@ -40,7 +40,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import casier.billsplitter.Balance.BalanceActivity;
 import casier.billsplitter.BuildConfig;
 import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.Model.User;
@@ -93,8 +92,11 @@ public class AddBillActivity extends Activity implements UserDataObserver {
         Typeface typeface = Typeface.createFromAsset(am,"fonts/HelloMilkMoney.ttf");
         //screenTitle.setTypeface(typeface);
         //endregion
+        List<User> userList = new ArrayList<>();
+        for(String s : mUtils.getSelectedAccount().getAccountUsers())
+            userList.add(mUtils.getUserById(s));
 
-        adapter = new UserPickerAdapter(this, R.layout.row_user_picker, mUtils.getSelectedAccount().getAccountUsers());
+        adapter = new UserPickerAdapter(this, R.layout.row_user_picker, userList);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         usersPicker.setLayoutManager(layoutManager);
         usersPicker.setHasFixedSize(true);
@@ -116,11 +118,11 @@ public class AddBillActivity extends Activity implements UserDataObserver {
     public void submit(View v){
         SparseBooleanArray pickedUsers = adapter.getItemStateArray();
         List<String> billUsersList = new ArrayList<>();
-        List<User> userList = mUtils.getUserList();
+        List<String> userList = mUtils.getSelectedAccount().getAccountUsers();
 
         for(int i = 0 ; i < pickedUsers.size() ; i ++){
             if(pickedUsers.get(i)){
-                billUsersList.add(userList.get(i).getUserId());
+                billUsersList.add(mUtils.getUserById(userList.get(i)).getUserId());
             }
         }
 
@@ -139,8 +141,9 @@ public class AddBillActivity extends Activity implements UserDataObserver {
             }
 
             presenter.addBill(billName.getText().toString(), billAmount.getText().toString(), billUsersList);
-            Intent intent = new Intent(this, BalanceActivity.class);
-            startActivity(intent);
+            Intent intent = new Intent();
+            setResult(1, intent);
+            finish();
         }
     }
 

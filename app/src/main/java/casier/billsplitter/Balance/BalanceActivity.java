@@ -49,12 +49,11 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     @BindView(R.id.floating_add_bill)
     android.support.design.widget.FloatingActionButton fab;
 
-
     private BalancePresenter presenter;
     private BalanceArrayAdapter balanceArrayAdapter;
-    private BalanceSummaryAdapter balanceSummaryAdapter;
     private Utils mUtils;
-    private List<Balance> balanceList;
+
+    static final int ADD_BILL_REQUEST = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -128,8 +127,19 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
 
     @Override
     public void onClick(View view) {
+        fab.setEnabled(false);
         Intent intent = new Intent(this, AddBillActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, ADD_BILL_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        fab.setEnabled(true);
+        if(requestCode ==  ADD_BILL_REQUEST){
+            if(resultCode == 1){
+                doTheBalance();
+            }
+        }
     }
 
     public void doTheBalance(){
@@ -162,7 +172,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
         for(User payer : mUtils.getUserList()){
             for(User paid : mUtils.getUserList()){
                 if(payer.getUsersBalance() !=  null){
-                    if(payer.getUsersBalance().containsKey(paid)){
+                    if(payer.getUsersBalance().containsKey(paid) && paid.getUsersBalance() != null){
                         Float payerAmount = payer.getUsersBalance().get(paid);
                         Float paidAmount  = paid.getUsersBalance().get(payer);
 
@@ -183,7 +193,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
             }
         }
 
-        balanceList = new ArrayList<>();
+        List<Balance> balanceList = new ArrayList<>();
         for(User u : mUtils.getUserList()){
             if(u.getUsersBalance() != null){
                 for(Map.Entry<User, Float> entry : u.getUsersBalance().entrySet()){
@@ -192,7 +202,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
             }
         }
 
-        balanceSummaryAdapter = new BalanceSummaryAdapter(this, balanceList);
+        BalanceSummaryAdapter balanceSummaryAdapter = new BalanceSummaryAdapter(this, balanceList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         balanceRecycler.setLayoutManager(layoutManager);
         balanceRecycler.setHasFixedSize(true);
@@ -209,5 +219,10 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     public void onBillDataChange(List<Bill> billList) {
         balanceArrayAdapter.notifyDataSetChanged();
         doTheBalance();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

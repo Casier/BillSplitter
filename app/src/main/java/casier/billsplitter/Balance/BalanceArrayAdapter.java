@@ -27,17 +27,12 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final List<Bill> billList;
     private OnItemClicked onClick;
     private Utils mUtils;
-    private int itemRessource;
-    private Context context;
 
     public interface OnItemClicked {
         void onClick(int position);
     }
 
     public BalanceArrayAdapter(@NonNull Context context, int resource, List<Bill> billList) {
-
-        this.itemRessource = resource;
-        this.context = context;
         this.billList = billList;
         this.mUtils = Utils.getInstance();
         setHasStableIds(true);
@@ -117,7 +112,6 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         private Context context;
         private final TextView billName;
-        private final TextView billAmount;
         private final CircleImageView userImage;
         public RelativeLayout layout;
 
@@ -128,7 +122,6 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             this.context = context;
 
             this.billName = itemView.findViewById(R.id.billName);
-            this.billAmount = itemView.findViewById(R.id.billAmount);
             this.userImage = itemView.findViewById(R.id.billUserImage);
             this.layout = itemView.findViewById(R.id.selfContainer);
 
@@ -136,8 +129,7 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
 
         void bindBill(Bill bill){
-            billName.setText(bill.getTitle());
-            billAmount.setText(bill.getAmount() + "$");
+            billName.setText(bill.getTitle() + " | " + bill.getAmount() + "$");
 
             Glide.with(context)
                     .load(Uri.parse(mUtils.getInstance().getImageUrlByUserId(bill.getOwnerId())))
@@ -154,7 +146,6 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         private Context context;
         private final TextView billName;
-        private final TextView billAmount;
         private final CircleImageView userImage;
         public RelativeLayout layout;
 
@@ -164,7 +155,6 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             this.context = context;
 
             this.billName = itemView.findViewById(R.id.billName);
-            this.billAmount = itemView.findViewById(R.id.billAmount);
             this.userImage = itemView.findViewById(R.id.billUserImage);
             this.layout = itemView.findViewById(R.id.globalContainer);
 
@@ -173,8 +163,7 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         void bindBill(Bill bill){
 
-            billName.setText(bill.getTitle());
-            billAmount.setText(bill.getAmount() + "$");
+            billName.setText(bill.getTitle() + " | " + bill.getAmount() + "$");
 
             Glide.with(context)
                     .load(Uri.parse(Utils.getInstance().getImageUrlByUserId(bill.getOwnerId())))

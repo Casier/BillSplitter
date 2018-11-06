@@ -2,16 +2,18 @@
 <RelativeLayout
     android:id="@+id/account_picker_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="150dp"
-    android:layout_height="wrap_content"
-    android:background="@drawable/rounded_corner">
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:background="@drawable/rounded_corner"
+    android:layout_gravity="center_horizontal"
+    android:gravity="center"
+    android:layout_margin="12dp">
 
     <TextView
         android:id="@+id/account_name"
         android:padding="3dp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

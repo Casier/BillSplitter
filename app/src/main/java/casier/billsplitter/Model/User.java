@@ -18,6 +18,12 @@ public class User {
 
     }
 
+    public User (String userEmail, String userName, String userPhotoUrl){
+        this.userEmail = userEmail;
+        this.userName = userName;
+        this.userPhotoUrl = userPhotoUrl;
+    }
+
     public User(String userEmail, String userName, String userPhotoUrl, Map<User, Float> usersBalance){
         this.userEmail = userEmail;
         this.userName = userName;

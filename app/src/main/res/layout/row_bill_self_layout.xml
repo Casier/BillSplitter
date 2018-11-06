@@ -3,6 +3,7 @@
     android:id="@+id/selfContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginRight="-10dp"
     android:layout_marginBottom="5dp">
 
     <View
@@ -25,16 +26,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="13dp"
             android:paddingLeft="5dp"
-            android:layout_toRightOf="@+id/billAmount"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/billAmount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginLeft="60dp"
-            android:paddingTop="13dp"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
