@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -49,6 +51,15 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     @BindView(R.id.floating_add_bill)
     android.support.design.widget.FloatingActionButton fab;
 
+    @BindView(R.id.balance_placeholder_one)
+    RelativeLayout placeholderTop;
+
+    @BindView(R.id.balance_placeholder_two)
+    RelativeLayout placeholderBottom;
+
+    @BindView(R.id.placeholder_arrow)
+    ImageView placeholderArrow;
+
     private BalancePresenter presenter;
     private BalanceArrayAdapter balanceArrayAdapter;
     private Utils mUtils;
@@ -76,6 +87,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
         billRecycler.setHasFixedSize(true);
         billRecycler.setAdapter(balanceArrayAdapter);
         balanceArrayAdapter.setOnClick(BalanceActivity.this);
+        checkIfPlaceholder();
     }
 
     @Override
@@ -83,6 +95,18 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
         super.onDestroy();
         mUtils.removeBillObserver(this);
         mUtils.removeUserObserver(this);
+    }
+
+    public void checkIfPlaceholder(){
+        if(balanceArrayAdapter.getItemCount() == 0){
+            placeholderTop.setVisibility(View.VISIBLE);
+            placeholderBottom.setVisibility(View.VISIBLE);
+            placeholderArrow.setVisibility(View.VISIBLE);
+        } else {
+            placeholderTop.setVisibility(View.GONE);
+            placeholderBottom.setVisibility(View.GONE);
+            placeholderArrow.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -219,6 +243,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     public void onBillDataChange(List<Bill> billList) {
         balanceArrayAdapter.notifyDataSetChanged();
         doTheBalance();
+        checkIfPlaceholder();
     }
 
     @Override

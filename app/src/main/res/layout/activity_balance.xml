@@ -4,6 +4,42 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <RelativeLayout
+        android:id="@+id/balance_placeholder_one"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/centerShim">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:text="Vous n'avez aucune facture !"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/balance_placeholder_two"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/centerShim">
+
+        <TextView
+            android:id="@+id/placeholder_text_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="130dp"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:text="Appuyez ici pour en ajouter une " />
+
+    </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/billsList"
         android:layout_width="match_parent"
@@ -31,10 +67,22 @@
 
     </RelativeLayout>
 
+    <ImageView
+        android:id="@+id/placeholder_arrow"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:tint="@color/text"
+        android:rotation="270"
+        android:layout_toStartOf="@+id/floating_add_bill"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/download_arrow"/>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floating_add_bill"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:backgroundTint="@color/primary"
         android:tint="@color/grey_back"

@@ -13,6 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -59,6 +60,12 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
     @BindView(R.id.settings_tv)
     TextView settingsText;
 
+    @BindView(R.id.account_title)
+    TextView titleScreen;
+
+    @BindView(R.id.account_placeholder_layout)
+    RelativeLayout placeholder;
+
     private Utils mUtils;
     private AccountPresenter presenter;
 
@@ -83,6 +90,7 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
         accountPicker.setLayoutManager(layoutManager);
         accountPicker.setHasFixedSize(true);
         accountPicker.setAdapter(adapter);
+        checkIfPlaceholder();
     }
 
     @Override
@@ -99,6 +107,17 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
     @Override
     public void onAccountDataChange(List<Account> accountList) {
         adapter.notifyDataSetChanged();
+        checkIfPlaceholder();
+    }
+
+    public void checkIfPlaceholder(){
+        if(adapter.getItemCount() == 0){
+            placeholder.setVisibility(View.VISIBLE);
+            titleScreen.setVisibility(View.GONE);
+        } else {
+            placeholder.setVisibility(View.GONE);
+            titleScreen.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -125,7 +144,6 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
         balanceText.setWidth(0);
         pieText.setWidth(0);
         settingsText.setWidth(0);
-
 
         accountIcon.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white), android.graphics.PorterDuff.Mode.MULTIPLY);
     }

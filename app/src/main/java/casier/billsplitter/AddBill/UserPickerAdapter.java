@@ -37,7 +37,7 @@ public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        RecyclerView.ViewHolder viewHolder = new UserPickerHolder(inflater.inflate(R.layout.row_user_picker, parent, false));
+        RecyclerView.ViewHolder viewHolder = new UserPickerHolder(inflater.inflate(itemResource, parent, false));
 
         return viewHolder;
     }

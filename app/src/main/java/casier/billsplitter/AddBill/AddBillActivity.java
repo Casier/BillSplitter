@@ -5,10 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -86,12 +84,7 @@ public class AddBillActivity extends Activity implements UserDataObserver {
         if(intent.hasExtra("line")){
             billAmount.setText(intent.getStringExtra("line"));
         }
-
-        //region Using custom font
-        AssetManager am = getApplicationContext().getAssets();
-        Typeface typeface = Typeface.createFromAsset(am,"fonts/HelloMilkMoney.ttf");
-        //screenTitle.setTypeface(typeface);
-        //endregion
+        
         List<User> userList = new ArrayList<>();
         for(String s : mUtils.getSelectedAccount().getAccountUsers())
             userList.add(mUtils.getUserById(s));
