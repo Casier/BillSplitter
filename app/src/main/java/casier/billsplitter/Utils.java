@@ -17,6 +17,7 @@ import java.util.Map;
 import casier.billsplitter.Model.Account;
 import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.User;
+import io.reactivex.Observable;
 
 public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubject {
 
@@ -87,6 +88,18 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
     }
 
     private void loadAccounts(){
+        Observable<Account> accListObs = Observable.create(emitter -> {
+                try{
+                    List<Account> accList = accountList;
+                    for(Account a : accList){
+                        emitter.onNext(a);
+                    }
+                    emitter.onComplete();
+                } catch (Exception e){
+                    emitter.onError(e);
+                }
+        });
+        
         mDatabase = FirebaseDatabase.getInstance();
         Query queryAccount = mDatabase.getReference("accounts");
         queryAccount.addValueEventListener(new ValueEventListener() {
