@@ -25,7 +25,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import casier.billsplitter.AddBill.AddBillActivity;
+import casier.billsplitter.AccountSettings.AccountSettingsActivity;
 import casier.billsplitter.BillDataObserver;
 import casier.billsplitter.Model.Balance;
 import casier.billsplitter.Model.Bill;
@@ -152,7 +152,8 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     @Override
     public void onClick(View view) {
         fab.setEnabled(false);
-        Intent intent = new Intent(this, AddBillActivity.class);
+        Intent intent = new Intent(this, AccountSettingsActivity.class);
+        //Intent intent = new Intent(this, AddBillActivity.class);
         startActivityForResult(intent, ADD_BILL_REQUEST);
     }
 
@@ -162,6 +163,8 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
         if(requestCode ==  ADD_BILL_REQUEST){
             if(resultCode == 1){
                 doTheBalance();
+            } else if(resultCode == 2){
+                finish();
             }
         }
     }

@@ -1,6 +1,10 @@
 package casier.billsplitter;
 
+import android.support.annotation.NonNull;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -11,13 +15,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import casier.billsplitter.Model.Account;
 import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.User;
-import io.reactivex.Observable;
 
 public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubject {
 
@@ -88,17 +92,6 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
     }
 
     private void loadAccounts(){
-        Observable<Account> accListObs = Observable.create(emitter -> {
-                try{
-                    List<Account> accList = accountList;
-                    for(Account a : accList){
-                        emitter.onNext(a);
-                    }
-                    emitter.onComplete();
-                } catch (Exception e){
-                    emitter.onError(e);
-                }
-        });
         
         mDatabase = FirebaseDatabase.getInstance();
         Query queryAccount = mDatabase.getReference("accounts");
@@ -188,9 +181,19 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
     }
 
     public void deleteAccount(Account account){
+        Iterator<Account> iterator = accountList.iterator();
+        while(iterator.hasNext()){
+            Account current = iterator.next();
+            if(current.getAccountName().equals(account.getAccountName()))
+                iterator.remove();
+        }
         mDatabase = FirebaseDatabase.getInstance();
-        mDatabase.getReference("accounts").child(account.getAccountName()).removeValue();
-        notifyAccountObservers();
+        mDatabase.getReference("accounts").child(account.getAccountName()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                notifyAccountObservers();
+            }
+        });
     }
 
     public User getUserById(String id){

@@ -102,7 +102,7 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="00dp"
+        android:elevation="0dp"
         android:background="@color/grey_front"
         android:textColor="@color/text"
         android:text="Ajouter"/>
