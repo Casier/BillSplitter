@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -16,6 +18,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import casier.billsplitter.AddBill.UserPickerAdapter;
 import casier.billsplitter.Model.User;
 import casier.billsplitter.R;
@@ -28,6 +31,9 @@ public class CreateAccountActivity extends Activity {
 
     @BindView(R.id.account_name)
     EditText accountNameEditText;
+
+    @BindView(R.id.account_users_search)
+    EditText userSearch;
 
 
     private CreateAccountPresenter presenter;
@@ -50,11 +56,11 @@ public class CreateAccountActivity extends Activity {
     }
 
     @OnClick(R.id.button_create_account)
-    public void onClickCreateAccount(){
+    public void onClickCreateAccount() {
 
         String accountName = accountNameEditText.getText().toString();
 
-        if(accountName.equals("")){
+        if (accountName.equals("")) {
             Toast.makeText(this, "Veuillez nommer votre compte !", Toast.LENGTH_LONG).show();
             return;
         }
@@ -62,8 +68,8 @@ public class CreateAccountActivity extends Activity {
         List<User> billUsersList = new ArrayList<>();
         List<User> usersList = mUtils.getUserList();
 
-        for(int i = 0 ; i < pickedUsers.size() ; i ++){
-            if(pickedUsers.get(i)){
+        for (int i = 0; i < pickedUsers.size(); i++) {
+            if (pickedUsers.get(i)) {
                 billUsersList.add(usersList.get(i));
             }
         }
@@ -74,4 +80,17 @@ public class CreateAccountActivity extends Activity {
         setResult(1, intent);
         finish();
     }
+    @OnTextChanged(R.id.account_users_search)
+    public void onSearchTextChanged(Editable editable){
+        Log.d("panda", editable.toString());
+        List<User> filteredUserList = mUtils.searchUsers(editable.toString());
+        adapter.setUserList(filteredUserList);
+        adapter.notifyDataSetChanged();
+    }
+
+    @OnClick(R.id.search_clear_text)
+    public void clearSearch(){
+        userSearch.setText("");
+    }
+
 }

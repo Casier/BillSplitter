@@ -14,6 +14,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -155,6 +156,12 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
         }
     }
 
+    public void updateAccount(String accountName, List<User> userList){
+        DatabaseReference oldReference = mDatabase.getReference("accounts").child(selectedAccount.getAccountName());
+        DatabaseReference newReference = mDatabase.getReference("accounts").child(accountName);
+        copyRecord(oldReference, newReference);
+    }
+
     public void addBill(Bill bill){
         if(!selectedAccount.getBills().contains(bill)){
             selectedAccount.getBills().add(bill);
@@ -165,6 +172,28 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
             notifyAccountObservers();
             notifyBillObservers();
         }
+    }
+
+    private void copyRecord(DatabaseReference fromPath, final DatabaseReference toPath) {
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                toPath.setValue(dataSnapshot.getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isComplete()) {
+                            fromPath.removeValue();
+                        } else {
+                            // todo show toast
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        };
+        fromPath.addListenerForSingleValueEvent(valueEventListener);
     }
 
     public void deleteBill(Bill bill){
@@ -237,6 +266,7 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
     @Override
     public void notifyUserObservers() {
         for(UserDataObserver o : mUserObservers){
+            Collections.sort(userList, (u1, u2) -> (u1.getUserName().compareTo(u2.getUserName())));
             o.onUserDataChange(userList);
         }
     }
@@ -258,6 +288,7 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
     @Override
     public void notifyBillObservers() {
         for(BillDataObserver o : mBillObservers){
+            Collections.sort(selectedAccount.getBills(), (u1, u2) -> (u1.getTitle().compareTo(u2.getTitle()))  );
             o.onBillDataChange(selectedAccount.getBills());
         }
     }
@@ -276,8 +307,10 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
 
     @Override
     public void notifyAccountObservers() {
-        for(AccountDataObserver o : mDataObservers)
+        for(AccountDataObserver o : mDataObservers){
+            Collections.sort(accountList, (u1, u2) -> (u1.getAccountName().compareTo(u2.getAccountName())));
             o.onAccountDataChange(accountList);
+        }
     }
 
     public Account getAccountByName(String name){
@@ -288,5 +321,14 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
             }
         }
         return null;
+    }
+
+    public List<User> searchUsers(String searchSequence){
+        List<User> searchedUserList = new ArrayList<>();
+        for(User u : userList){
+            if(u.getUserName().toLowerCase().contains(searchSequence.toLowerCase()))
+                searchedUserList.add(u);
+        }
+        return searchedUserList;
     }
 }

@@ -5,15 +5,27 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/create_account_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="22sp"
+        android:paddingBottom="6dp"
+        android:gravity="center_horizontal|bottom"
+        android:background="@color/grey_border"
+        android:text="Créer un compte"/>
+
+    <TextView
         android:id="@+id/account_name_label"
+        android:layout_below="@+id/create_account_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
         android:text="Nom du compte"/>
 
     <EditText
         android:id="@+id/account_name"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="12dp"
         android:layout_below="@+id/account_name_label"
         android:layout_width="match_parent"
@@ -28,10 +40,36 @@
         android:layout_height="wrap_content"
         android:text="Choix des utilisateurs"/>
 
+    <FrameLayout
+        android:id="@+id/account_user_search_layout"
+        android:layout_below="@+id/account_user_list_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/account_users_search"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="12dp"
+            android:hint="Chercher un utilisateur ..."
+            android:textSize="14sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/search_clear_text"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:backgroundTint="@color/text"
+            android:background="@drawable/cross"
+            android:layout_marginEnd="24dp"
+            android:layout_gravity="right|center_vertical"/>
+
+    </FrameLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/account_user_picker_recycler"
         android:padding="12dp"
-        android:layout_below="@+id/account_user_list_label"
+        android:layout_below="@+id/account_user_search_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

@@ -4,18 +4,63 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/account_settings_name"
+    <TextView
+        android:id="@+id/update_account_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="50dp"
+        android:textSize="22sp"
+        android:paddingBottom="6dp"
+        android:gravity="center_horizontal|bottom"
+        android:background="@color/grey_border"
+        android:text="Modifier"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/account_settings_users"
+    <RelativeLayout
+        android:layout_below="@id/update_account_title"
+        android:layout_above="@+id/account_settings_save"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="12dp"
-        android:layout_below="@+id/account_settings_name"
-        android:layout_above="@+id/account_settings_delete"/>
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/account_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text"
+            android:labelFor="@+id/account_settings_name"
+            android:text="Nom du compte"/>
+
+        <EditText
+            android:id="@+id/account_settings_name"
+            android:layout_below="@+id/account_name_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/account_users_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:layout_below="@+id/account_settings_name"
+            android:text="Utilisateurs"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/account_settings_users"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/account_users_label"/>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/account_settings_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_front"
+        android:textColor="@color/white"
+        android:layout_above="@+id/account_settings_delete"
+        android:text="Sauvegarder"/>
 
     <Button
         android:id="@+id/account_settings_delete"

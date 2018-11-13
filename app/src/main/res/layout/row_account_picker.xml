@@ -3,17 +3,61 @@
     android:id="@+id/account_picker_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="30dp"
-    android:background="@drawable/rounded_corner"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_corner_account"
     android:layout_gravity="center_horizontal"
-    android:gravity="center"
     android:layout_margin="12dp">
 
     <TextView
         android:id="@+id/account_name"
-        android:padding="3dp"
-        android:gravity="center"
+        android:text="bonsoir"
+        android:textSize="18sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"/>
+
+    <View
+        android:id="@+id/account_separator"
+        android:layout_below="@+id/account_name"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="1dp"
+        android:background="@color/text"/>
+
+    <RelativeLayout
+        android:layout_below="@+id/account_separator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <casier.billsplitter.InterceptClickRelativeLayout
+            android:id="@+id/account_picker_user_layout"
+            android:layout_toStartOf="@id/account_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/account_user_list"
+                android:padding="12dp"
+                android:layout_marginEnd="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </casier.billsplitter.InterceptClickRelativeLayout>
+
+        <ImageView
+            android:id="@+id/account_settings"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginEnd="12dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:tint="@color/text"
+            android:src="@drawable/settings"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

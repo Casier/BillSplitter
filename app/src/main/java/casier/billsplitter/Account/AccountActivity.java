@@ -6,8 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
@@ -22,14 +23,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import casier.billsplitter.AccountDataObserver;
+import casier.billsplitter.AccountSettings.AccountSettingsActivity;
 import casier.billsplitter.Balance.BalanceActivity;
 import casier.billsplitter.CreateAccount.CreateAccountActivity;
 import casier.billsplitter.Model.Account;
 import casier.billsplitter.R;
 import casier.billsplitter.Utils;
-
-
-//TODO placeholder si recycler vide
 
 public class AccountActivity extends Activity implements AccountDataObserver, AccountPickerAdapter.OnItemClicked {
 
@@ -86,7 +85,7 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
 
         adapter = new AccountPickerAdapter(this, R.layout.row_account_picker, mUtils.getAccountList());
         adapter.setOnclick(AccountActivity.this);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         accountPicker.setLayoutManager(layoutManager);
         accountPicker.setHasFixedSize(true);
         accountPicker.setAdapter(adapter);
@@ -122,11 +121,20 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
 
     @Override
     public void onClick(int position) {
-        mUtils.setSelectedAccount(mUtils.getAccountList().get(position));
+        Log.d("panda", "oui");
+        presenter.setSelectedAccount(position);
         Intent intent = new Intent(this, BalanceActivity.class);
         startActivity(intent);
     }
 
+    @Override
+    public void onSettingsClick(int position) {
+        presenter.setSelectedAccount(position);
+        Intent intent = new Intent(this, AccountSettingsActivity.class);
+        startActivityForResult(intent, 55);
+    }
+
+    //region top menu tbd
     @OnClick(R.id.account_layout)
     public void onAccountClick(){
         int finalWidth = ((View) accountText.getParent()).getMeasuredWidth();
@@ -188,9 +196,29 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
         settingsText.setVisibility(View.VISIBLE);
     }
 
+    //endregion
+
+    private static final int REQUEST_INVITE = 0;
+
     @OnClick(R.id.account_add)
     public void onAddClick(){
+
+            /*
+
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            i.putExtra(Intent.EXTRA_SUBJECT, "BillSplitter");
+            String strShareMessage = "\nLet me recommend you this application\n\n";
+            strShareMessage = strShareMessage + "https://play.google.com/store/apps/details?id=" + getPackageName();
+            i.setType("image/png");
+            i.putExtra(Intent.EXTRA_TEXT, strShareMessage);
+            startActivity(Intent.createChooser(i, "Share via"));
+
+            */
+
+
         Intent intent = new Intent(this, CreateAccountActivity.class);
         startActivityForResult(intent, CREATE_ACCOUNT_REQUEST);
+
     }
 }

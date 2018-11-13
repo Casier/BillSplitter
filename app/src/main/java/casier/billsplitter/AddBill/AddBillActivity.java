@@ -21,8 +21,8 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.vision.Frame;
@@ -38,6 +38,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import casier.billsplitter.BuildConfig;
 import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.Model.User;
@@ -46,9 +47,6 @@ import casier.billsplitter.UserDataObserver;
 import casier.billsplitter.Utils;
 
 public class AddBillActivity extends Activity implements UserDataObserver {
-
-    @BindView(R.id.screenTitle)
-    TextView screenTitle;
 
     @BindView(R.id.bill_name)
     EditText billName;
@@ -59,6 +57,9 @@ public class AddBillActivity extends Activity implements UserDataObserver {
     @BindView(R.id.users_picker)
     RecyclerView usersPicker;
 
+    @BindView(R.id.bill_add)
+    Button btnAddBill;
+
     private Utils mUtils;
     private UserPickerAdapter adapter;
     private AddBillPresenter presenter;
@@ -68,6 +69,8 @@ public class AddBillActivity extends Activity implements UserDataObserver {
     private static final String TAG = "AddBillActivityDebug";
     private static final int REQUEST_WRITE_PERMISSION = 20;
     private static final int PHOTO_REQUEST = 10;
+    private boolean billNameExists = false;
+    private boolean billAmountExists = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -233,5 +236,35 @@ public class AddBillActivity extends Activity implements UserDataObserver {
 
         return BitmapFactory.decodeStream(ctx.getContentResolver()
                 .openInputStream(uri), null, bmOptions);
+    }
+
+    @OnTextChanged(R.id.bill_name)
+    public void onBillNameChanged(CharSequence name){
+        if(name.length() > 0){
+            billNameExists = true;
+        } else {
+            billNameExists = false;
+        }
+        checkButtonEnabled();
+    }
+
+    @OnTextChanged(R.id.bill_amount)
+    public void onBillAmountChanged(CharSequence amount){
+        if(amount.length() > 0){
+            billAmountExists = true;
+        } else {
+            billAmountExists = false;
+        }
+        checkButtonEnabled();
+    }
+
+    public void checkButtonEnabled(){
+        if(billNameExists && billAmountExists){
+            btnAddBill.setEnabled(true);
+            btnAddBill.setTextColor(getResources().getColor(R.color.text));
+        } else {
+            btnAddBill.setEnabled(false);
+            btnAddBill.setTextColor(getResources().getColor(R.color.grey_border));
+        }
     }
 }

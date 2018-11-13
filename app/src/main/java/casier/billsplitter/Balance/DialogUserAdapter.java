@@ -19,11 +19,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class DialogUserAdapter extends RecyclerView.Adapter {
 
     private List<String> userIdList;
+    private int itemResource;
     private Utils mUtils;
     private Context context;
 
-    public DialogUserAdapter(Context context, List<String> userIdList){
+    public DialogUserAdapter(Context context, int resource, List<String> userIdList){
             this.userIdList = userIdList;
+            this.itemResource = resource;
             mUtils = Utils.getInstance();
             this.context = context;
     }
@@ -32,7 +34,7 @@ public class DialogUserAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        RecyclerView.ViewHolder viewHolder = new DialogUserHolder(inflater.inflate(R.layout.row_dialog_user, parent, false));
+        RecyclerView.ViewHolder viewHolder = new DialogUserHolder(inflater.inflate(itemResource, parent, false));
 
         return viewHolder;
     }

@@ -4,27 +4,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/add_bill_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="22sp"
+        android:paddingBottom="6dp"
+        android:gravity="center_horizontal|bottom"
+        android:background="@color/grey_border"
+        android:text="Créer un compte"/>
+
     <RelativeLayout
         android:layout_above="@+id/bill_add"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp">
-
-        <TextView
-            android:id="@+id/screenTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Ajouter une facture"
-            android:textAlignment="center"
-            android:textSize="22sp" />
+        android:layout_below="@+id/add_bill_title"
+        android:padding="12dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="45dp"
             android:layout_height="match_parent"
-            android:layout_below="@+id/screenTitle"
             android:focusable="true"
             android:focusableInTouchMode="true" >
 
@@ -40,7 +39,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/bill_name_label"
-                android:layout_marginTop="4dp"
                 android:inputType="textNoSuggestions"/>
 
             <TextView
@@ -63,7 +61,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@+id/bill_amount_camera"
-                    android:layout_marginTop="4dp"
                     android:inputType="numberDecimal" />
 
                 <ImageView
@@ -102,9 +99,10 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:elevation="0dp"
         android:background="@color/grey_front"
-        android:textColor="@color/text"
+        android:textColor="@color/grey_border"
         android:text="Ajouter"/>
 
 </RelativeLayout>

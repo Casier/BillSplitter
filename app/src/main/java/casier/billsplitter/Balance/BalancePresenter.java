@@ -1,103 +1,91 @@
 package casier.billsplitter.Balance;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import casier.billsplitter.Model.Balance;
 import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.User;
-import casier.billsplitter.UserDataObserver;
+import casier.billsplitter.Utils;
 
 public class BalancePresenter {
 
     private FirebaseDatabase mDatabase;
     private BalanceActivity balanceActivity;
-    private List<Bill> billList = new ArrayList<>();
-    private Map<String, User> usersList;
-    private ArrayList<UserDataObserver> mObservers;
+    private Utils mUtils;
 
     public BalancePresenter(final BalanceActivity balanceActivity) {
         this.balanceActivity = balanceActivity;
-        usersList = new HashMap<>();
-        mObservers = new ArrayList<>();
-        getBills();
-        getImagesUrl();
+        this.mUtils = Utils.getInstance();
     }
 
-    private void getImagesUrl(){
-        mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = mDatabase.getReference("users");
-        Query queryUrl = myRef;
-        queryUrl.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    User u = snapshot.getValue(User.class);
-                    if(u != null){
-                        usersList.put(snapshot.getKey(), u);
+    public void deleteBill(int position){
+        mUtils.deleteBill(mUtils.getBillList().get(position));
+    }
+
+    public List<Balance> doTheBalance(){
+        List<Balance> balanceList = new ArrayList<>();
+        if(mUtils.getUserList() == null || mUtils.getUserList().size() == 0)
+            return null;
+
+        for(User u : mUtils.getUserList())
+            u.clearBalance();
+
+        for(Bill b : mUtils.getBillList()){
+            if(b.getUsersId() != null)
+            {
+                for(String s : b.getUsersId()){
+                    User u = mUtils.getUserById(s);
+                    if(!u.getUserId().equals(b.getOwnerId())){
+                        Float amountBeforeSplit = Float.valueOf(b.getAmount());
+                        Float finalAmount = amountBeforeSplit / b.getUsersId().size();
+
+                        Float finalRoundedAmount =  Math.round(finalAmount*100.0)/100.0f;
+                        for(String userToAddBill : b.getUsersId()){
+                            if(!userToAddBill.equals(u.getUserId())){
+                                u.addToBalance(mUtils.getUserById(userToAddBill), finalRoundedAmount);
+                            }
+                        }
                     }
                 }
             }
+        }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+        for(User payer : mUtils.getUserList()){
+            for(User paid : mUtils.getUserList()){
+                if(payer.getUsersBalance() !=  null){
+                    if(payer.getUsersBalance().containsKey(paid) && paid.getUsersBalance() != null){
+                        Float payerAmount = payer.getUsersBalance().get(paid);
+                        Float paidAmount  = paid.getUsersBalance().get(payer);
 
-            }
-        });
-    }
-
-    public void getBills(){
-        mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = mDatabase.getReference("bills");
-        Query queryBills = myRef;
-        queryBills.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    Bill b = snapshot.getValue(Bill.class);
-                    if(b != null) billList.add(b);
+                        if(payerAmount != null && paidAmount != null){
+                            if(payerAmount > paidAmount){
+                                payer.getUsersBalance().put(paid, payerAmount - paidAmount);
+                                paid.getUsersBalance().remove(payer);
+                            } else if (payerAmount.equals(paidAmount)){
+                                payer.getUsersBalance().remove(paid);
+                                paid.getUsersBalance().remove(payer);
+                            } else {
+                                paid.getUsersBalance().put(payer, paidAmount - payerAmount);
+                                payer.getUsersBalance().remove(paid);
+                            }
+                        }
+                    }
                 }
             }
+        }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void removeBill(Bill bill){
-        // TODO : Remove bill from database
-    }
-
-
-    public List<String> getNames() {
-
-        List<String> names = new ArrayList<>();
-
-        Map<String, Float> usersBalance = new HashMap<>();
-        for(Bill b : billList){
-            Float amount = Float.parseFloat(b.getAmount());
-            if(usersBalance.containsKey(b.getOwnerId())){
-                usersBalance.put(b.getOwnerId(), (usersBalance.get(b.getOwnerId()) + amount));
-            } else {
-                usersBalance.put(b.getOwnerId(), amount);
+        for(User u : mUtils.getUserList()){
+            if(u.getUsersBalance() != null){
+                for(Map.Entry<User, Float> entry : u.getUsersBalance().entrySet()){
+                    balanceList.add(new Balance(u.getUserId(), entry.getKey().getUserId(), entry.getValue()));
+                }
             }
         }
 
-        for (Map.Entry<String, Float> entry : usersBalance.entrySet())
-        {
-            System.out.println(entry.getKey() + "/" + entry.getValue());
-        }
-
-        return names;
+        return balanceList;
     }
 }

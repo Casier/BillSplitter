@@ -170,10 +170,11 @@
     <TextView
         android:id="@+id/account_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:textSize="22sp"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="12dp"
+        android:paddingBottom="6dp"
+        android:gravity="center_horizontal|bottom"
+        android:background="@color/grey_border"
         android:text="Sélectionnez un compte"/>
 
 

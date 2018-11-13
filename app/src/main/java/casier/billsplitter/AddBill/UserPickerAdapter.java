@@ -48,6 +48,10 @@ public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         userPickerHolder.bindUser(userList.get(position));
     }
 
+    public void setUserList(List<User> userList){
+        this.userList = userList;
+    }
+
     @Override
     public int getItemCount() {
         return this.userList.size();

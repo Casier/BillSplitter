@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.widget.EditText;
 
 import java.util.List;
@@ -54,6 +55,16 @@ public class AccountSettingsActivity extends Activity {
         presenter.deleteAccount();
         Intent intent = new Intent();
         setResult(2, intent);
+        this.finish();
+    }
+
+    @OnClick(R.id.account_settings_save)
+    public void onUpdateAccout(){
+        String accountName = accountNameEditText.getText().toString();
+        SparseBooleanArray pickedUsers = adapter.getItemStateArray();
+        presenter.updateAccount(accountNameEditText.getText().toString(), pickedUsers);
+        Intent intent = new Intent();
+        setResult(3, intent);
         this.finish();
     }
 }

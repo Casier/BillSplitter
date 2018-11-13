@@ -4,6 +4,16 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <TextView
+        android:id="@+id/balance_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="22sp"
+        android:paddingBottom="6dp"
+        android:gravity="center_horizontal|bottom"
+        android:background="@color/grey_border"
+        android:text="Balance"/>
+
     <RelativeLayout
         android:id="@+id/balance_placeholder_one"
         android:layout_width="match_parent"
@@ -42,6 +52,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/billsList"
+        android:layout_below="@+id/balance_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/centerShim"
