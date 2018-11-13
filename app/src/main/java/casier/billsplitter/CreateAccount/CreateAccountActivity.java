@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -82,7 +81,6 @@ public class CreateAccountActivity extends Activity {
     }
     @OnTextChanged(R.id.account_users_search)
     public void onSearchTextChanged(Editable editable){
-        Log.d("panda", editable.toString());
         List<User> filteredUserList = mUtils.searchUsers(editable.toString());
         adapter.setUserList(filteredUserList);
         adapter.notifyDataSetChanged();

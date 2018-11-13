@@ -202,21 +202,6 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
 
     @OnClick(R.id.account_add)
     public void onAddClick(){
-
-            /*
-
-            Intent i = new Intent(Intent.ACTION_SEND);
-            i.setType("text/plain");
-            i.putExtra(Intent.EXTRA_SUBJECT, "BillSplitter");
-            String strShareMessage = "\nLet me recommend you this application\n\n";
-            strShareMessage = strShareMessage + "https://play.google.com/store/apps/details?id=" + getPackageName();
-            i.setType("image/png");
-            i.putExtra(Intent.EXTRA_TEXT, strShareMessage);
-            startActivity(Intent.createChooser(i, "Share via"));
-
-            */
-
-
         Intent intent = new Intent(this, CreateAccountActivity.class);
         startActivityForResult(intent, CREATE_ACCOUNT_REQUEST);
 

@@ -1,5 +1,7 @@
 package casier.billsplitter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -22,9 +24,10 @@ import java.util.Map;
 
 import casier.billsplitter.Model.Account;
 import casier.billsplitter.Model.Bill;
+import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.Model.User;
 
-public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubject {
+public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubject, FriendDataSubject {
 
     private FirebaseDatabase mDatabase;
 
@@ -86,6 +89,27 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
 
             }
         });
+    }
+
+    public void addFriend(String friendID){
+        LocalUser currentUser = LocalUser.getInstance();
+        currentUser.addFriend(friendID);
+        DatabaseReference reference = mDatabase.getReference("users").child(LocalUser.getInstance().getUserId());
+
+        reference.setValue(currentUser.getFriendList());
+
+        notifyFriendsObservers();
+    }
+
+    public void sendInviteToFriend(String mail, String title, String body, Context context){
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_SUBJECT, "BillSplitter");
+        String strShareMessage = "\nLet me recommend you this application\n\n";
+        strShareMessage = strShareMessage + "https://play.google.com/store/apps/details?id=" + context.getPackageName();
+        i.setType("image/png");
+        i.putExtra(Intent.EXTRA_TEXT, strShareMessage);
+        context.startActivity(Intent.createChooser(i, "Share via"));
     }
 
     public String getImageUrlByUserId(String userId){
@@ -330,5 +354,20 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
                 searchedUserList.add(u);
         }
         return searchedUserList;
+    }
+
+    @Override
+    public void registerFriendObserver(FriendDataObserver dataObserver) {
+
+    }
+
+    @Override
+    public void removeFriendObserver(FriendDataObserver dataObserver) {
+
+    }
+
+    @Override
+    public void notifyFriendsObservers() {
+
     }
 }

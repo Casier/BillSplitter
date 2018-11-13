@@ -2,12 +2,15 @@ package casier.billsplitter.Model;
 
 import android.net.Uri;
 
+import java.util.List;
+
 public class LocalUser {
 
     private String user_id;
     private String user_email;
     private String user_name;
     private Uri user_photo_url;
+    private List<String> friendList;
 
     private static LocalUser mInstance = null;
 
@@ -49,5 +52,19 @@ public class LocalUser {
 
     public void setUserPhotoUrl(Uri user_photo_url) {
         this.user_photo_url = user_photo_url;
+    }
+
+    public List<String> getFriendList(){
+        return this.friendList;
+    }
+
+    public void addFriend(String friendID){
+        if(!friendList.contains(friendID))
+            friendList.add(friendID);
+    }
+
+    public void removeFriend(String friendID){
+        if(friendList.contains(friendID))
+            friendList.remove(friendID);
     }
 }
