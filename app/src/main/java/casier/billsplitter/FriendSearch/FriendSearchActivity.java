@@ -1,11 +1,19 @@
 package casier.billsplitter.FriendSearch;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -15,6 +23,7 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import casier.billsplitter.Model.User;
 import casier.billsplitter.R;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FriendSearchActivity extends Activity implements FriendListAdapter.OnUserClicked {
 
@@ -48,8 +57,31 @@ public class FriendSearchActivity extends Activity implements FriendListAdapter.
 
     @Override
     public void onUserClick(int position) {
-        presenter.addFriend(adapter.getUserList().get(position).getUserId());
         // TODO dialog de confirmation
+
+        final Dialog dialog = new Dialog(this, android.R.style.Theme_Dialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_confirm_add_friend);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        TextView userName = dialog.findViewById(R.id.add_friend_text);
+        CircleImageView userImage = dialog.findViewById(R.id.add_friend_image);
+        Button addFriend = dialog.findViewById(R.id.add_friend_btn);
+
+        userName.setText("Ajouter " + adapter.getUserList().get(position).getUserName() + " aux amis ?");
+
+
+        addFriend.setOnClickListener(view -> {
+            presenter.addFriend(adapter.getUserList().get(position).getUserId());
+            dialog.dismiss();
+        });
+
+        Glide.with(this)
+                .load(Uri.parse(adapter.getUserList().get(position).getUserPhotoUrl()))
+                .into(userImage);
+        dialog.show();
+
     }
 
     @OnTextChanged(R.id.search_friend_input)

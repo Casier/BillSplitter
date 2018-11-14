@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp"
+    android:background="@color/grey_back">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/add_friend_image"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/add_friend_text"
+        android:layout_marginTop="24dp"
+        android:layout_below="@+id/add_friend_image"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/add_friend_btn"
+        android:layout_below="@+id/add_friend_text"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="24dp"
+        android:background="@color/green_bill"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:text="AJOUTER"/>
+
+</RelativeLayout>
