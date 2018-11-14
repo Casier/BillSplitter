@@ -41,7 +41,7 @@ public class Account {
     }
 
     public void setAccountUsers(List<String> accountUsers) {
-        this.usersId = accountUsers;
+        this.usersId = new ArrayList<>(accountUsers);
     }
 
     public void addUserToAccount(User user){
@@ -79,7 +79,7 @@ public class Account {
     }
 
     public void setBills(List<Bill> bills) {
-        this.bills = bills;
+        this.bills = new ArrayList<>(bills);
     }
 
     @Override

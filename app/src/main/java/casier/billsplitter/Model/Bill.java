@@ -1,5 +1,6 @@
 package casier.billsplitter.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Bill {
@@ -19,7 +20,7 @@ public class Bill {
         this.amount = amount;
         this.ownerId = ownerId;
         this.title = title;
-        this.usersId = usersId;
+        this.usersId = new ArrayList<>(usersId);
     }
 
     public String getDate() {
@@ -56,7 +57,7 @@ public class Bill {
 
     public List<String> getUsersId() { return this.usersId; }
 
-    public void setUsersId(List<String> usersId) { this.usersId = usersId; }
+    public void setUsersId(List<String> usersId) { this.usersId = new ArrayList<>(usersId); }
 
     @Override
     public boolean equals(Object obj) {

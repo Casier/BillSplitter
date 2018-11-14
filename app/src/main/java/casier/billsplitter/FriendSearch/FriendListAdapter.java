@@ -36,7 +36,7 @@ public class FriendListAdapter extends RecyclerView.Adapter {
     public FriendListAdapter(Context context, int resource, List<User> userList){
         this.context = context;
         this.rowLayout = resource;
-        this.userListWithoutFriends = userList;
+        this.userListWithoutFriends = new ArrayList<>(userList);
         this.mUtils = Utils.getInstance();
     }
 

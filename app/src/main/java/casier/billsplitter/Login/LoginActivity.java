@@ -13,14 +13,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import casier.billsplitter.Account.AccountActivity;
 import casier.billsplitter.R;
-import casier.billsplitter.Utils;
 
 public class LoginActivity extends Activity {
 
     private LoginPresenter presenter;
     @BindView(R.id.sign_in_button) SignInButton signInButton;
-
-    private Utils mUtils;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,7 +25,6 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_signin);
         ButterKnife.bind(this);
         presenter = new LoginPresenter(this);
-        this.mUtils = Utils.getInstance();
 
     }
 
