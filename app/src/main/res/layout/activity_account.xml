@@ -2,7 +2,18 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/grey_back">
+
+    <TextView
+        android:id="@+id/account_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="22sp"
+        android:paddingBottom="6dp"
+        android:gravity="center_horizontal|bottom"
+        android:background="@color/grey_border"
+        android:text="Sélectionnez un compte"/>
 
     <RelativeLayout
         android:id="@+id/account_placeholder_layout"
@@ -166,17 +177,6 @@
         </RelativeLayout>
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/account_title"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:textSize="22sp"
-        android:paddingBottom="6dp"
-        android:gravity="center_horizontal|bottom"
-        android:background="@color/grey_border"
-        android:text="Sélectionnez un compte"/>
-
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_account_picker"
