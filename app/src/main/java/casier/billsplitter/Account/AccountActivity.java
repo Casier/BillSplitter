@@ -25,7 +25,7 @@ import butterknife.OnClick;
 import casier.billsplitter.AccountDataObserver;
 import casier.billsplitter.AccountSettings.AccountSettingsActivity;
 import casier.billsplitter.Balance.BalanceActivity;
-import casier.billsplitter.CreateAccount.CreateAccountActivity;
+import casier.billsplitter.FriendSearch.FriendSearchActivity;
 import casier.billsplitter.Model.Account;
 import casier.billsplitter.R;
 import casier.billsplitter.Utils;
@@ -121,7 +121,6 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
 
     @Override
     public void onClick(int position) {
-        Log.d("panda", "oui");
         presenter.setSelectedAccount(position);
         Intent intent = new Intent(this, BalanceActivity.class);
         startActivity(intent);
@@ -202,7 +201,8 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
 
     @OnClick(R.id.account_add)
     public void onAddClick(){
-        Intent intent = new Intent(this, CreateAccountActivity.class);
+        Intent intent = new Intent(this, FriendSearchActivity.class);
+        //Intent intent = new Intent(this, CreateAccountActivity.class);
         startActivityForResult(intent, CREATE_ACCOUNT_REQUEST);
 
     }

@@ -2,15 +2,16 @@ package casier.billsplitter.Model;
 
 import android.net.Uri;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LocalUser {
 
-    private String user_id;
+    private static String user_id;
     private String user_email;
     private String user_name;
     private Uri user_photo_url;
-    private List<String> friendList;
+    private List<String> friendList = new ArrayList<>();
 
     private static LocalUser mInstance = null;
 

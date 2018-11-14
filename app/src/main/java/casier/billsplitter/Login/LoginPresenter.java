@@ -67,5 +67,6 @@ public class LoginPresenter {
         LocalUser.getInstance().setUserId(account.getId());
         LocalUser.getInstance().setUserName(account.getDisplayName());
         LocalUser.getInstance().setUserPhotoUrl(account.getPhotoUrl());
+        mUtils.getUserFriends(account.getId());
     }
 }

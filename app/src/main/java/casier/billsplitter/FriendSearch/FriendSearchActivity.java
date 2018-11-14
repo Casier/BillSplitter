@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -39,16 +41,20 @@ public class FriendSearchActivity extends Activity implements FriendListAdapter.
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.clear();
+    }
+
+    @Override
     public void onUserClick(int position) {
-        User clickedUser = presenter.getClickedUser(position);
-        presenter.addFriend(clickedUser.getUserId());
+        presenter.addFriend(adapter.getUserList().get(position).getUserId());
         // TODO dialog de confirmation
     }
 
     @OnTextChanged(R.id.search_friend_input)
     public void onSearchFriend(Editable editable){
         adapter.setUserList(presenter.getFilteredUserList(editable.toString()));
-        adapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.search_friend_invite_button)
@@ -56,5 +62,9 @@ public class FriendSearchActivity extends Activity implements FriendListAdapter.
         presenter.sendInviteToFriend("","", "");
 
         // TODO dialog d'input pour les data ou fragment maybe
+    }
+
+    public void updateAdapter(List<User> friendList){
+        adapter.setUserList(friendList);
     }
 }

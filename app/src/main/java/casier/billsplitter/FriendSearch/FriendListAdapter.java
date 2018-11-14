@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import casier.billsplitter.Model.User;
@@ -21,7 +22,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FriendListAdapter extends RecyclerView.Adapter {
 
-    private List<User> userList;
+    private List<User> userListWithoutFriends;
     private int rowLayout;
     private Context context;
     private OnUserClicked onClick;
@@ -35,7 +36,7 @@ public class FriendListAdapter extends RecyclerView.Adapter {
     public FriendListAdapter(Context context, int resource, List<User> userList){
         this.context = context;
         this.rowLayout = resource;
-        this.userList = userList;
+        this.userListWithoutFriends = userList;
         this.mUtils = Utils.getInstance();
     }
 
@@ -53,12 +54,12 @@ public class FriendListAdapter extends RecyclerView.Adapter {
         FriendListHolder friendListHolder = (FriendListHolder) holder;
         ((FriendListHolder) holder).layout.setOnClickListener(view -> onClick.onUserClick(position));
 
-        friendListHolder.bindUser(userList.get(position));
+        friendListHolder.bindUser(userListWithoutFriends.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return userList.size();
+        return userListWithoutFriends.size();
     }
 
     public void setOnclick(OnUserClicked onClick){
@@ -66,8 +67,13 @@ public class FriendListAdapter extends RecyclerView.Adapter {
     }
 
     public void setUserList(List<User> userList){
-        this.userList = userList;
+        this.userListWithoutFriends = new ArrayList<>();
+        this.userListWithoutFriends.addAll(userList);
+
+        this.notifyDataSetChanged();
     }
+
+    public List<User> getUserList(){ return this.userListWithoutFriends; }
 
     public class FriendListHolder extends RecyclerView.ViewHolder{
 

@@ -38,7 +38,8 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
 
     private ArrayList<UserDataObserver> mUserObservers = new ArrayList<>();
     private ArrayList<BillDataObserver> mBillObservers = new ArrayList<>();
-    private ArrayList<AccountDataObserver> mDataObservers = new ArrayList<>();
+    private ArrayList<AccountDataObserver> mAccountObservers = new ArrayList<>();
+    private ArrayList<FriendDataObserver> mFriendObservers = new ArrayList<>();
 
     private static Utils mInstance = null;
     private Map<String, String> usersImageUrl = new HashMap<>();
@@ -91,14 +92,29 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
         });
     }
 
+    public void getUserFriends(String userID){
+        DatabaseReference reference = mDatabase.getReference("users").child(userID).child("friends");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    LocalUser.getInstance().addFriend(snapshot.getValue(String.class));
+                }
+                notifyFriendsObservers();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public void addFriend(String friendID){
         LocalUser currentUser = LocalUser.getInstance();
         currentUser.addFriend(friendID);
         DatabaseReference reference = mDatabase.getReference("users").child(LocalUser.getInstance().getUserId());
-
-        reference.setValue(currentUser.getFriendList());
-
-        notifyFriendsObservers();
+        reference.child("friends").setValue(currentUser.getFriendList());
     }
 
     public void sendInviteToFriend(String mail, String title, String body, Context context){
@@ -117,7 +133,6 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
     }
 
     private void loadAccounts(){
-        
         mDatabase = FirebaseDatabase.getInstance();
         Query queryAccount = mDatabase.getReference("accounts");
         queryAccount.addValueEventListener(new ValueEventListener() {
@@ -319,19 +334,19 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
 
     @Override
     public void registerAccountObserver(AccountDataObserver dataObserver) {
-        if(!mDataObservers.contains(dataObserver))
-            mDataObservers.add(dataObserver);
+        if(!mAccountObservers.contains(dataObserver))
+            mAccountObservers.add(dataObserver);
     }
 
     @Override
     public void removeAccountObserver(AccountDataObserver dataObserver) {
-        if(mDataObservers.contains(dataObserver))
-            mDataObservers.remove(dataObserver);
+        if(mAccountObservers.contains(dataObserver))
+            mAccountObservers.remove(dataObserver);
     }
 
     @Override
     public void notifyAccountObservers() {
-        for(AccountDataObserver o : mDataObservers){
+        for(AccountDataObserver o : mAccountObservers){
             Collections.sort(accountList, (u1, u2) -> (u1.getAccountName().compareTo(u2.getAccountName())));
             o.onAccountDataChange(accountList);
         }
@@ -358,16 +373,20 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
 
     @Override
     public void registerFriendObserver(FriendDataObserver dataObserver) {
-
+        if(!mFriendObservers.contains(dataObserver))
+            mFriendObservers.add(dataObserver);
     }
 
     @Override
     public void removeFriendObserver(FriendDataObserver dataObserver) {
-
+        if(mFriendObservers.contains(dataObserver))
+            mFriendObservers.remove(dataObserver);
     }
 
     @Override
     public void notifyFriendsObservers() {
-
+        for(FriendDataObserver o : mFriendObservers){
+            o.onFriendDataChange(LocalUser.getInstance().getFriendList());
+        }
     }
 }
