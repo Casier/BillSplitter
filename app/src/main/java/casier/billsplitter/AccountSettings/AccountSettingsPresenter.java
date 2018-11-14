@@ -1,7 +1,5 @@
 package casier.billsplitter.AccountSettings;
 
-import android.util.SparseBooleanArray;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,15 +29,7 @@ public class AccountSettingsPresenter {
         mUtils.deleteAccount(mUtils.getSelectedAccount());
     }
 
-    public void updateAccount(String accountName, SparseBooleanArray pickedUsers){
-        List<User> billUsersList = new ArrayList<>();
-        List<User> usersList = mUtils.getUserList();
-
-        for(int i = 0 ; i < pickedUsers.size() ; i ++){
-            if(pickedUsers.get(i)){
-                billUsersList.add(usersList.get(i));
-            }
-        }
-        mUtils.updateAccount(accountName, usersList);
+    public void updateAccount(String accountName, List<User> pickedUsers){
+        mUtils.updateAccount(accountName, pickedUsers);
     }
 }

@@ -19,7 +19,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
-import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -87,12 +86,8 @@ public class AddBillActivity extends Activity implements UserDataObserver {
         if(intent.hasExtra("line")){
             billAmount.setText(intent.getStringExtra("line"));
         }
-        
-        List<User> userList = new ArrayList<>();
-        for(String s : mUtils.getSelectedAccount().getAccountUsers())
-            userList.add(mUtils.getUserById(s));
 
-        adapter = new UserPickerAdapter(this, R.layout.row_user_picker, userList);
+        adapter = new UserPickerAdapter(this, R.layout.row_user_picker, presenter.getAccountUserList());
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         usersPicker.setLayoutManager(layoutManager);
         usersPicker.setHasFixedSize(true);
@@ -112,16 +107,6 @@ public class AddBillActivity extends Activity implements UserDataObserver {
 
     @OnClick(R.id.bill_add)
     public void submit(View v){
-        SparseBooleanArray pickedUsers = adapter.getItemStateArray();
-        List<String> billUsersList = new ArrayList<>();
-        List<String> userList = mUtils.getSelectedAccount().getAccountUsers();
-
-        for(int i = 0 ; i < pickedUsers.size() ; i ++){
-            if(pickedUsers.get(i)){
-                billUsersList.add(mUtils.getUserById(userList.get(i)).getUserId());
-            }
-        }
-
         if((LocalUser.getInstance().getUserId()) != null && !LocalUser.getInstance().getUserId().isEmpty())
         {
             String amount = billAmount.getText().toString();
@@ -136,7 +121,7 @@ public class AddBillActivity extends Activity implements UserDataObserver {
                 return;
             }
 
-            presenter.addBill(billName.getText().toString(), billAmount.getText().toString(), billUsersList);
+            presenter.addBill(billName.getText().toString(), billAmount.getText().toString(), adapter.getSelectedUserList());
             Intent intent = new Intent();
             setResult(1, intent);
             finish();

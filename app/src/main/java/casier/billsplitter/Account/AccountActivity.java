@@ -104,6 +104,7 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
 
     @Override
     public void onAccountDataChange(List<Account> accountList) {
+        adapter.setAccountList(accountList);
         adapter.notifyDataSetChanged();
         checkIfPlaceholder();
     }

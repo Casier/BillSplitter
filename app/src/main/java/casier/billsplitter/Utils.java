@@ -3,6 +3,7 @@ package casier.billsplitter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -139,6 +140,7 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Log.d("panda", "oui");
                     List<Bill> accountBillList = new ArrayList<>();
                     List<String> accountUsers = new ArrayList<>();
                     for(DataSnapshot billSnapshot : snapshot.getChildren()){
@@ -388,5 +390,12 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
         for(FriendDataObserver o : mFriendObservers){
             o.onFriendDataChange(LocalUser.getInstance().getFriendList());
         }
+    }
+
+    public User getAccountUserAtPosition(int position){
+        if(selectedAccount != null)
+            return getUserById(selectedAccount.getAccountUsers().get(position));
+        else
+            return null;
     }
 }

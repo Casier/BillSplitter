@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseBooleanArray;
 import android.widget.EditText;
 
 import java.util.List;
@@ -44,6 +43,7 @@ public class AccountSettingsActivity extends Activity {
 
     public void setAccountUsers(List<User> accountUserList){
         adapter = new UserPickerAdapter(this, R.layout.row_user_picker, accountUserList);
+        adapter.setSelectedUserList(accountUserList);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
         accountUsersRecycler.setLayoutManager(layoutManager);
         accountUsersRecycler.setHasFixedSize(true);
@@ -59,10 +59,8 @@ public class AccountSettingsActivity extends Activity {
     }
 
     @OnClick(R.id.account_settings_save)
-    public void onUpdateAccout(){
-        String accountName = accountNameEditText.getText().toString();
-        SparseBooleanArray pickedUsers = adapter.getItemStateArray();
-        presenter.updateAccount(accountNameEditText.getText().toString(), pickedUsers);
+    public void onUpdateAccount(){
+        presenter.updateAccount(accountNameEditText.getText().toString(), adapter.getSelectedUserList());
         Intent intent = new Intent();
         setResult(3, intent);
         this.finish();

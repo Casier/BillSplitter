@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,24 +12,27 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.Model.User;
 import casier.billsplitter.R;
+import casier.billsplitter.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private int itemResource;
-    private SparseBooleanArray itemStateArray = new SparseBooleanArray();
     private List<User> userList;
+    private List<User> selectedUserList = new ArrayList<>();
+    private Utils mUtils;
 
     public UserPickerAdapter(Context context, int resource, List<User> userList){
         this.context = context;
-        this.userList = userList;
+        this.userList = new ArrayList<>(userList);
         this.itemResource = resource;
+        this.mUtils = Utils.getInstance();
     }
 
     @NonNull
@@ -48,8 +50,19 @@ public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         userPickerHolder.bindUser(userList.get(position));
     }
 
+    public boolean isSelected(int position){
+        User u = userList.get(position);
+        if(selectedUserList.contains(u)){
+            selectedUserList.remove(u);
+            return false;
+        } else {
+            selectedUserList.add(u);
+            return true;
+        }
+    }
+
     public void setUserList(List<User> userList){
-        this.userList = userList;
+        this.userList = new ArrayList<>(userList);
     }
 
     @Override
@@ -57,8 +70,12 @@ public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return this.userList.size();
     }
 
-    public SparseBooleanArray getItemStateArray() {
-        return itemStateArray;
+    public List<User> getSelectedUserList(){
+        return selectedUserList;
+    }
+
+    public void setSelectedUserList(List<User> selectedUserList){
+        this.selectedUserList = new ArrayList<>(selectedUserList);
     }
 
     public class UserPickerHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -79,13 +96,7 @@ public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public void bindUser(User user){
             userName.setText(user.getUserName());
-            if(user.getUserName().equals(LocalUser.getInstance().getUserName())){
-                checkBox.setChecked(true);
-                itemStateArray.put(getAdapterPosition(), true);
-            } else {
-                itemStateArray.put(getAdapterPosition(), false);
-            }
-
+            checkBox.setChecked(selectedUserList.contains(user));
             Glide.with(context)
                     .load(Uri.parse(user.getUserPhotoUrl()))
                     .into(userImage);
@@ -95,14 +106,7 @@ public class UserPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public void onClick(View view) {
             view.clearFocus();
             int adapterPosition = getAdapterPosition();
-            if (!itemStateArray.get(adapterPosition, false)) {
-                checkBox.setChecked(true);
-                itemStateArray.put(adapterPosition, true);
-            }
-            else  {
-                checkBox.setChecked(false);
-                itemStateArray.put(adapterPosition, false);
-            }
+            checkBox.setChecked(isSelected(adapterPosition));
         }
     }
 }

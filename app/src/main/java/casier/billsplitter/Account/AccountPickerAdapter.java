@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import casier.billsplitter.Balance.DialogUserAdapter;
@@ -20,7 +21,7 @@ import casier.billsplitter.R;
 public class AccountPickerAdapter extends RecyclerView.Adapter {
 
     private Context context;
-    private final List<Account> accountList;
+    private List<Account> accountList;
     private int itemResource;
     private OnItemClicked onClick;
 
@@ -32,7 +33,7 @@ public class AccountPickerAdapter extends RecyclerView.Adapter {
     public AccountPickerAdapter(Context context, int resource, List<Account> accountList){
         this.context = context;
         this.itemResource = resource;
-        this.accountList = accountList;
+        this.accountList = new ArrayList<>(accountList);
     }
 
 
@@ -57,6 +58,10 @@ public class AccountPickerAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         return accountList.size();
+    }
+
+    public void setAccountList(List<Account> accountList){
+        this.accountList = new ArrayList<>(accountList);
     }
 
     public void setOnclick(OnItemClicked onClick){

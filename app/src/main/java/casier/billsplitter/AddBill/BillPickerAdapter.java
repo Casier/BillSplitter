@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import casier.billsplitter.R;
@@ -26,7 +27,7 @@ public class BillPickerAdapter extends RecyclerView.Adapter implements View.OnCl
     public BillPickerAdapter(Context context, int resource, List<String> amount, OnItemClickListener listener){
         this.context = context;
         this.resource = resource;
-        this.amount = amount;
+        this.amount = new ArrayList<>(amount);
         this.listener = listener;
     }
     @NonNull
