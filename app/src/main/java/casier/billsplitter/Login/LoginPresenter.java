@@ -9,6 +9,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
+import casier.billsplitter.DAO;
 import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.Utils;
 
@@ -17,12 +18,15 @@ public class LoginPresenter {
     private LoginActivity loginActivity;
     private static final int RC_SIGN_IN = 2018;
     private Utils mUtils;
+    private DAO data;
 
     private GoogleSignInClient mGoogleSignInClient;
 
     public LoginPresenter(LoginActivity loginActivity){
         this.loginActivity = loginActivity;
         this.mUtils = Utils.getInstance();
+        this.data = DAO.getInstance();
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
