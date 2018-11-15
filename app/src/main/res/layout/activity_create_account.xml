@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:text="Choix des utilisateurs"/>
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/account_user_search_layout"
         android:layout_below="@+id/account_user_list_label"
         android:layout_width="match_parent"
@@ -57,16 +57,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <Button
+        <RelativeLayout
             android:id="@+id/search_clear_text"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:backgroundTint="@color/text"
-            android:background="@drawable/cross"
-            android:layout_marginEnd="24dp"
-            android:layout_gravity="right|center_vertical"/>
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="12dp"
+            android:layout_width="80dp"
+            android:layout_height="40dp">
 
-    </FrameLayout>
+            <Button
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:backgroundTint="@color/text"
+                android:background="@drawable/cross"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="12dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="right|center_vertical"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/account_user_picker_recycler"
@@ -88,7 +98,7 @@
 
     <RelativeLayout
         android:visibility="visible"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="36dp"
         android:id="@+id/user_picker_placeholder"
         android:layout_below="@+id/account_user_search_layout"
         android:layout_width="match_parent"
