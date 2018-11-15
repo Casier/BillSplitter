@@ -16,19 +16,29 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
         android:layout_marginLeft="-50dp"
         android:layout_toRightOf="@+id/billUserImage"
         android:background="@drawable/rounded_self_bill">
 
         <TextView
-            android:id="@+id/billName"
+            android:id="@+id/billFirstLine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="13dp"
-            android:paddingLeft="5dp"
             android:layout_marginLeft="60dp"
             android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/billSecondLine"
+            android:layout_below="@+id/billFirstLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:textColor="@android:color/white"
+            android:textSize="13sp" />
 
     </RelativeLayout>
 

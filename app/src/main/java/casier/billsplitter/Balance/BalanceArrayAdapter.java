@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,7 +112,8 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public class BillsSelfHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
 
         private Context context;
-        private final TextView billName;
+        private final TextView billFirstLine;
+        private final TextView billSecondLine;
         private final CircleImageView userImage;
         public RelativeLayout layout;
 
@@ -121,7 +123,8 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             this.context = context;
 
-            this.billName = itemView.findViewById(R.id.billName);
+            this.billFirstLine = itemView.findViewById(R.id.billFirstLine);
+            this.billSecondLine = itemView.findViewById(R.id.billSecondLine);
             this.userImage = itemView.findViewById(R.id.billUserImage);
             this.layout = itemView.findViewById(R.id.selfContainer);
 
@@ -129,7 +132,8 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
 
         void bindBill(Bill bill){
-            billName.setText(bill.getTitle() + " | " + bill.getAmount() + "$");
+            billFirstLine.setText(Html.fromHtml(bill.getTitle() + " - Montant : <b>" + bill.getAmount() + "$</b>"));
+            billSecondLine.setText(Html.fromHtml("payé par <b>" + mUtils.getUserById(bill.getOwnerId()).getUserName() + "</b>"));
 
             Glide.with(context)
                     .load(Uri.parse(mUtils.getInstance().getImageUrlByUserId(bill.getOwnerId())))
@@ -145,7 +149,8 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public class BillsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private Context context;
-        private final TextView billName;
+        private final TextView billFirstLine;
+        private final TextView billSecondLine;
         private final CircleImageView userImage;
         public RelativeLayout layout;
 
@@ -154,7 +159,8 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             this.context = context;
 
-            this.billName = itemView.findViewById(R.id.billName);
+            this.billFirstLine = itemView.findViewById(R.id.billFirstLine);
+            this.billSecondLine = itemView.findViewById(R.id.billSecondLine);
             this.userImage = itemView.findViewById(R.id.billUserImage);
             this.layout = itemView.findViewById(R.id.globalContainer);
 
@@ -163,7 +169,8 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         void bindBill(Bill bill){
 
-            billName.setText(bill.getTitle() + " | " + bill.getAmount() + "$");
+            billFirstLine.setText(Html.fromHtml(bill.getTitle() + " - Montant : <b>" + bill.getAmount() + "$</b>"));
+            billSecondLine.setText(Html.fromHtml("payé par <b>" + mUtils.getUserById(bill.getOwnerId()).getUserName() + "</b>"));
 
             Glide.with(context)
                     .load(Uri.parse(Utils.getInstance().getImageUrlByUserId(bill.getOwnerId())))
