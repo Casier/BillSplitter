@@ -126,6 +126,7 @@ public class DAO implements UserDataSubject, FriendDataSubject, AccountDataSubje
         queryAccount.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                accountList.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     List<Bill> accountBillList = new ArrayList<>();
                     List<String> accountUsers = new ArrayList<>();
@@ -150,12 +151,7 @@ public class DAO implements UserDataSubject, FriendDataSubject, AccountDataSubje
                     a.setBills(accountBillList);
                     a.setAccountUsers(accountUsers);
 
-                    if(!accountList.contains(a))
-                        accountList.add(a);
-
-                    if(accountList.contains(a))
-                        accountList.set(accountList.indexOf(a), a);
-
+                    accountList.add(a);
                 }
                 notifyAccountObservers();
             }
