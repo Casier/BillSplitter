@@ -121,6 +121,11 @@ public class AddBillActivity extends Activity implements UserDataObserver {
                 return;
             }
 
+            if(adapter.getSelectedUserList().size() == 0){
+                Toast.makeText(this, "Choisissez au moins un utilisateur", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             presenter.addBill(billName.getText().toString(), billAmount.getText().toString(), adapter.getSelectedUserList());
             Intent intent = new Intent();
             setResult(1, intent);
@@ -243,6 +248,7 @@ public class AddBillActivity extends Activity implements UserDataObserver {
         checkButtonEnabled();
     }
 
+    // TODO ajouter le cas selectedUser.size() == 0
     public void checkButtonEnabled(){
         if(billNameExists && billAmountExists){
             btnAddBill.setEnabled(true);
