@@ -3,7 +3,6 @@ package casier.billsplitter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -77,6 +76,7 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
         queryUsers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                userList.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     User u = snapshot.getValue(User.class);
                     u.setUserId(snapshot.getKey());
@@ -129,6 +129,7 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
     }
 
     public void sendInviteToFriend(String mail, String title, String body, Context context){
+        // TODO use param
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("text/plain");
         i.putExtra(Intent.EXTRA_SUBJECT, "BillSplitter");
@@ -150,7 +151,6 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Log.d("panda", "oui");
                     List<Bill> accountBillList = new ArrayList<>();
                     List<String> accountUsers = new ArrayList<>();
                     for(DataSnapshot billSnapshot : snapshot.getChildren()){
@@ -173,8 +173,13 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
                     a.setAccountName(snapshot.getKey());
                     a.setBills(accountBillList);
                     a.setAccountUsers(accountUsers);
+
                     if(!accountList.contains(a))
                         accountList.add(a);
+
+                    if(accountList.contains(a))
+                        accountList.set(accountList.indexOf(a), a);
+
                 }
                 notifyAccountObservers();
             }

@@ -86,4 +86,24 @@
         android:textColor="@color/text"
         android:text="Créer le compte"/>
 
+    <RelativeLayout
+        android:visibility="visible"
+        android:layout_marginTop="12dp"
+        android:id="@+id/user_picker_placeholder"
+        android:layout_below="@+id/account_user_search_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/create_account_add_friend"
+            android:layout_centerHorizontal="true"
+            android:text="Inviter un ami"
+            android:paddingStart="36dp"
+            android:paddingEnd="36dp"
+            android:background="@color/green_bill"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp" />
+
+    </RelativeLayout>
+
 </RelativeLayout>

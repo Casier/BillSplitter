@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import casier.billsplitter.FriendDataObserver;
 import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.Model.User;
 import casier.billsplitter.Utils;
 
-public class CreateAccountPresenter {
+public class CreateAccountPresenter implements FriendDataObserver {
 
     private CreateAccountActivity createAccountActivity;
     private Utils mUtils;
@@ -16,6 +17,7 @@ public class CreateAccountPresenter {
     public CreateAccountPresenter(final CreateAccountActivity createAccountActivity){
         this.createAccountActivity = createAccountActivity;
         mUtils = Utils.getInstance();
+        mUtils.registerFriendObserver(this);
     }
 
     public void createAccount(String accountName, List<User> userList) {
@@ -44,5 +46,14 @@ public class CreateAccountPresenter {
                 iterator.remove();
         }
         return filteredFriendList;
+    }
+
+    @Override
+    public void onFriendDataChange(List<String> friendList) {
+        List<User> newFriendList = new ArrayList<>();
+        for(String s : friendList)
+            newFriendList.add(mUtils.getUserById(s));
+
+        createAccountActivity.updateAdapter(newFriendList);
     }
 }

@@ -67,8 +67,7 @@ public class FriendListAdapter extends RecyclerView.Adapter {
     }
 
     public void setUserList(List<User> userList){
-        this.userListWithoutFriends = new ArrayList<>();
-        this.userListWithoutFriends.addAll(userList);
+        this.userListWithoutFriends = new ArrayList<>(userList);
 
         this.notifyDataSetChanged();
     }

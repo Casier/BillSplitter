@@ -2,6 +2,7 @@ package casier.billsplitter.FriendSearch;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -75,6 +76,9 @@ public class FriendSearchActivity extends Activity implements FriendListAdapter.
         addFriend.setOnClickListener(view -> {
             presenter.addFriend(adapter.getUserList().get(position).getUserId());
             dialog.dismiss();
+            Intent intent = new Intent();
+            setResult(1, intent);
+            finish();
         });
 
         Glide.with(this)
