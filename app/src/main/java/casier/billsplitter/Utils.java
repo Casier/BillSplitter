@@ -63,9 +63,7 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
         }
 
         if(!accountAlreadyExists){
-            DatabaseReference reference = mDatabase.getReference("users");
-            User user = new User(account.getEmail(), account.getDisplayName(), account.getPhotoUrl().toString());
-            reference.child(account.getId()).setValue(user);
+            DAO.getInstance().addUser(account);
         }
     }
 
@@ -138,6 +136,10 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
         i.setType("image/png");
         i.putExtra(Intent.EXTRA_TEXT, strShareMessage);
         context.startActivity(Intent.createChooser(i, "Share via"));
+    }
+
+    public void addUserImageUrl(String id, String url){
+        usersImageUrl.put(id, url);
     }
 
     public String getImageUrlByUserId(String userId){
