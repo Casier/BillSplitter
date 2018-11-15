@@ -83,6 +83,16 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
                     userList.add(u);
                     usersImageUrl.put(snapshot.getKey(), u.getUserPhotoUrl());
                 }
+                // Add friends that added you
+                for(User u : userList) {
+                    if (u.getFriends() != null) {
+                        for (String s : u.getFriends()) {
+                            if (s.equals(LocalUser.getInstance().getUserId())) {
+                                addFriend(u.getUserId());
+                            }
+                        }
+                    }
+                }
                 notifyUserObservers();
             }
 
@@ -390,12 +400,5 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
         for(FriendDataObserver o : mFriendObservers){
             o.onFriendDataChange(LocalUser.getInstance().getFriendList());
         }
-    }
-
-    public User getAccountUserAtPosition(int position){
-        if(selectedAccount != null)
-            return getUserById(selectedAccount.getAccountUsers().get(position));
-        else
-            return null;
     }
 }

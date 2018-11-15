@@ -2,7 +2,9 @@ package casier.billsplitter.Model;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class User {
@@ -14,6 +16,8 @@ public class User {
     private Map<User, Float> usersBalance;
     @Exclude String userId;
 
+    private List<String> friends;
+
     public User(){
 
     }
@@ -22,6 +26,13 @@ public class User {
         this.userEmail = userEmail;
         this.userName = userName;
         this.userPhotoUrl = userPhotoUrl;
+    }
+
+    public User (String userEmail, String userName, String userPhotoUrl, List<String> friendList){
+        this.userEmail = userEmail;
+        this.userName = userName;
+        this.userPhotoUrl = userPhotoUrl;
+        this.friends = new ArrayList<>(friendList);
     }
 
     public User(String userEmail, String userName, String userPhotoUrl, Map<User, Float> usersBalance){
@@ -69,6 +80,14 @@ public class User {
 
     public String getUserId(){
         return this.userId;
+    }
+
+    public List<String> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<String> friends) {
+        this.friends = friends;
     }
 
     public void addToBalance(User paier, Float amount){
