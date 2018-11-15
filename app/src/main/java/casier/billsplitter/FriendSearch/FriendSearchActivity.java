@@ -70,7 +70,7 @@ public class FriendSearchActivity extends Activity implements FriendListAdapter.
         CircleImageView userImage = dialog.findViewById(R.id.add_friend_image);
         Button addFriend = dialog.findViewById(R.id.add_friend_btn);
 
-        userName.setText("Ajouter " + adapter.getUserList().get(position).getUserName() + " aux amis ?w");
+        userName.setText("Ajouter " + adapter.getUserList().get(position).getUserName() + " aux amis ?");
 
 
         addFriend.setOnClickListener(view -> {
