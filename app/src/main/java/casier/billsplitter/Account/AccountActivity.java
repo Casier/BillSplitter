@@ -21,16 +21,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import casier.billsplitter.AccountDataObserver;
 import casier.billsplitter.AccountSettings.AccountSettingsActivity;
 import casier.billsplitter.Balance.BalanceActivity;
 import casier.billsplitter.CreateAccount.CreateAccountActivity;
-import casier.billsplitter.DAO;
 import casier.billsplitter.Model.Account;
 import casier.billsplitter.R;
-import casier.billsplitter.Utils;
 
-public class AccountActivity extends Activity implements AccountDataObserver, AccountPickerAdapter.OnItemClicked {
+public class AccountActivity extends Activity implements AccountPickerAdapter.OnItemClicked {
 
     @BindView(R.id.recycler_account_picker)
     RecyclerView accountPicker;
@@ -65,8 +62,6 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
     @BindView(R.id.account_placeholder_layout)
     RelativeLayout placeholder;
 
-    private Utils mUtils;
-    private DAO data;
     private AccountPresenter presenter;
 
     private AccountPickerAdapter adapter;
@@ -81,11 +76,7 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
 
         presenter = new AccountPresenter(this);
 
-        mUtils = Utils.getInstance();
-        data = DAO.getInstance();
-        data.registerAccountObserver(this);
-
-        adapter = new AccountPickerAdapter(this, R.layout.row_account_picker, data.accountList);
+        adapter = new AccountPickerAdapter(this, R.layout.row_account_picker, presenter.getAccountList());
         adapter.setOnclick(AccountActivity.this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         accountPicker.setLayoutManager(layoutManager);
@@ -102,11 +93,10 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        data.removeAccountObserver(this);
+        presenter.clear();
     }
 
-    @Override
-    public void onAccountDataChange(List<Account> accountList) {
+    public void updateAdapter(List<Account> accountList){
         adapter.setAccountList(accountList);
         adapter.notifyDataSetChanged();
         checkIfPlaceholder();
@@ -134,6 +124,13 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
         presenter.setSelectedAccount(position);
         Intent intent = new Intent(this, AccountSettingsActivity.class);
         startActivityForResult(intent, 55);
+    }
+
+    @OnClick(R.id.account_add)
+    public void onAddClick(){
+        Intent intent = new Intent(this, CreateAccountActivity.class);
+        startActivityForResult(intent, CREATE_ACCOUNT_REQUEST);
+
     }
 
     //region top menu tbd
@@ -193,13 +190,4 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
     }
 
     //endregion
-
-    private static final int REQUEST_INVITE = 0;
-
-    @OnClick(R.id.account_add)
-    public void onAddClick(){
-        Intent intent = new Intent(this, CreateAccountActivity.class);
-        startActivityForResult(intent, CREATE_ACCOUNT_REQUEST);
-
-    }
 }

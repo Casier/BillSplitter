@@ -1,28 +1,29 @@
 package casier.billsplitter.Balance;
 
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import casier.billsplitter.BillDataObserver;
 import casier.billsplitter.DAO;
 import casier.billsplitter.Model.Balance;
 import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.User;
+import casier.billsplitter.UserDataObserver;
 import casier.billsplitter.Utils;
 
-public class BalancePresenter {
+public class BalancePresenter implements BillDataObserver, UserDataObserver {
 
-    private FirebaseDatabase mDatabase;
-    private BalanceActivity balanceActivity;
+    private BalanceActivity activity;
     private Utils mUtils;
     private DAO data;
 
     public BalancePresenter(final BalanceActivity balanceActivity) {
-        this.balanceActivity = balanceActivity;
+        this.activity = balanceActivity;
         this.mUtils = Utils.getInstance();
         this.data = DAO.getInstance();
+        data.registerBillObserver(this);
+        data.registerUserObserver(this);
     }
 
     public void deleteBill(int position){
@@ -90,5 +91,33 @@ public class BalancePresenter {
         }
 
         return balanceList;
+    }
+
+    public List<Bill> getSelectedAccountBills(){
+        return mUtils.getSelectedAccount().getBills();
+    }
+
+    public Bill getBillAtPosition(int positon){
+        return mUtils.getBillList().get(positon);
+    }
+
+    public String getOwnerImageUrl(int position){
+        return mUtils.getImageUrlByUserId(mUtils.getBillList().get(position).getOwnerId());
+    }
+
+    public void clear(){
+        data.removeUserObserver(this);
+        data.removeBillObserver(this);
+    }
+    @Override
+    public void onBillDataChange(List<Bill> billList) {
+        activity.balanceArrayAdapter.notifyDataSetChanged();
+        activity.doTheBalance();
+        activity.checkIfPlaceholder();
+    }
+
+    @Override
+    public void onUserDataChange(List<User> userList) {
+        activity.doTheBalance();
     }
 }

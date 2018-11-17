@@ -2,11 +2,9 @@ package casier.billsplitter.AddBill;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,7 +28,6 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,14 +36,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import casier.billsplitter.BuildConfig;
-import casier.billsplitter.DAO;
 import casier.billsplitter.Model.LocalUser;
-import casier.billsplitter.Model.User;
 import casier.billsplitter.R;
-import casier.billsplitter.UserDataObserver;
 import casier.billsplitter.Utils;
 
-public class AddBillActivity extends Activity implements UserDataObserver {
+public class AddBillActivity extends Activity {
 
     @BindView(R.id.bill_name)
     EditText billName;
@@ -60,9 +54,7 @@ public class AddBillActivity extends Activity implements UserDataObserver {
     @BindView(R.id.bill_add)
     Button btnAddBill;
 
-    private Utils mUtils;
-    private DAO data;
-    private UserPickerAdapter adapter;
+    public UserPickerAdapter adapter;
     private AddBillPresenter presenter;
     private Uri imageUri;
     private TextRecognizer detector;
@@ -80,9 +72,6 @@ public class AddBillActivity extends Activity implements UserDataObserver {
         ButterKnife.bind(this);
 
         presenter = new AddBillPresenter(this);
-        mUtils = Utils.getInstance();
-        data = DAO.getInstance();
-        data.registerUserObserver(this);
         detector = new TextRecognizer.Builder(getApplicationContext()).build();
 
         Intent intent = getIntent();
@@ -100,12 +89,7 @@ public class AddBillActivity extends Activity implements UserDataObserver {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        data.removeUserObserver(this);
-    }
-
-    @Override
-    public void onUserDataChange(List<User> userList) {
-        adapter.notifyDataSetChanged();
+        presenter.clear();
     }
 
     @OnClick(R.id.bill_add)
@@ -167,7 +151,7 @@ public class AddBillActivity extends Activity implements UserDataObserver {
         if(requestCode == PHOTO_REQUEST && resultCode == RESULT_OK){
             launchMediaScanIntent();
             try{
-                Bitmap bitmap = decodeBitmapUri(this, imageUri);
+                Bitmap bitmap = presenter.decodeBitmapUri(this, imageUri);
                 if (detector.isOperational() && bitmap != null) {
                     Frame frame = new Frame.Builder().setBitmap(bitmap).build();
                     SparseArray<TextBlock> textBlocks = detector.detect(frame);
@@ -212,23 +196,6 @@ public class AddBillActivity extends Activity implements UserDataObserver {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         mediaScanIntent.setData(imageUri);
         this.sendBroadcast(mediaScanIntent);
-    }
-
-    private Bitmap decodeBitmapUri(Context ctx, Uri uri) throws FileNotFoundException {
-        int targetW = 600;
-        int targetH = 600;
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(ctx.getContentResolver().openInputStream(uri), null, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-
-        return BitmapFactory.decodeStream(ctx.getContentResolver()
-                .openInputStream(uri), null, bmOptions);
     }
 
     @OnTextChanged(R.id.bill_name)

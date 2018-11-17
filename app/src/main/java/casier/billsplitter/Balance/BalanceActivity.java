@@ -24,17 +24,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import casier.billsplitter.AddBill.AddBillActivity;
-import casier.billsplitter.BillDataObserver;
-import casier.billsplitter.DAO;
 import casier.billsplitter.Model.Balance;
 import casier.billsplitter.Model.Bill;
-import casier.billsplitter.Model.User;
 import casier.billsplitter.R;
-import casier.billsplitter.UserDataObserver;
-import casier.billsplitter.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnItemClicked, BillDataObserver, UserDataObserver, View.OnClickListener{
+public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnItemClicked, View.OnClickListener{
 
     @BindView(R.id.billsList)
     RecyclerView billRecycler;
@@ -55,9 +50,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     ImageView placeholderArrow;
 
     private BalancePresenter presenter;
-    private BalanceArrayAdapter balanceArrayAdapter;
-    private Utils mUtils;
-    private DAO data;
+    public BalanceArrayAdapter balanceArrayAdapter;
 
     static final int ADD_BILL_REQUEST = 1;
 
@@ -68,14 +61,9 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
         ButterKnife.bind(this);
         fab.setOnClickListener(this);
 
-        mUtils = Utils.getInstance();
-        data = DAO.getInstance();
-        data.registerBillObserver(this);
-        data.registerUserObserver(this);
-
         presenter = new BalancePresenter(this);
 
-        balanceArrayAdapter = new BalanceArrayAdapter(mUtils.getSelectedAccount().getBills());
+        balanceArrayAdapter = new BalanceArrayAdapter(presenter.getSelectedAccountBills());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         billRecycler.setLayoutManager(layoutManager);
         billRecycler.setHasFixedSize(true);
@@ -89,8 +77,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        data.removeBillObserver(this);
-        data.removeUserObserver(this);
+        presenter.clear();
     }
 
     public void checkIfPlaceholder(){
@@ -108,7 +95,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     @Override
     public void onClick(final int position) {
 
-        Bill clickedBill = mUtils.getBillList().get(position);
+        Bill clickedBill = presenter.getBillAtPosition(position);
 
         final Dialog dialog = new Dialog(this, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -137,7 +124,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
         });
 
         Glide.with(this)
-                .load(Uri.parse(mUtils.getImageUrlByUserId(mUtils.getBillList().get(position).getOwnerId())))
+                .load(Uri.parse(presenter.getOwnerImageUrl(position)))
                 .into(userImage);
         dialog.show();
     }
@@ -174,18 +161,6 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
         balanceRecycler.setHasFixedSize(true);
         balanceRecycler.setAdapter(balanceSummaryAdapter);
 
-    }
-
-    @Override
-    public void onUserDataChange(List<User> userList) {
-        doTheBalance();
-    }
-
-    @Override
-    public void onBillDataChange(List<Bill> billList) {
-        balanceArrayAdapter.notifyDataSetChanged();
-        doTheBalance();
-        checkIfPlaceholder();
     }
 
     @Override
