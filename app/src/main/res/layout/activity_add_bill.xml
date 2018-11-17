@@ -13,7 +13,7 @@
         android:paddingBottom="6dp"
         android:gravity="center_horizontal|bottom"
         android:background="@color/grey_border"
-        android:text="Créer un compte"/>
+        android:text="Créer une facture"/>
 
     <RelativeLayout
         android:layout_above="@+id/bill_add"

@@ -219,7 +219,7 @@ public class AddBillActivity extends Activity {
     }
 
     public void checkButtonEnabled(){
-        if(billNameExists && billAmountExists && adapter.getSelectedUserList().size() > 0){
+        if(billNameExists && billAmountExists){
             btnAddBill.setEnabled(true);
             btnAddBill.setTextColor(getResources().getColor(R.color.text));
         } else {
