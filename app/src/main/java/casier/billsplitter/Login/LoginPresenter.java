@@ -52,14 +52,14 @@ public class LoginPresenter {
         loginActivity.startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent intentData) {
         if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(intentData);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 updateUserInfo(account);
                 loginActivity.loginSuccess();
-                mUtils.addUserIfNew(account);
+                data.addUser(account);
             } catch (ApiException e) {
                 loginActivity.loginError();
             }
@@ -71,6 +71,6 @@ public class LoginPresenter {
         LocalUser.getInstance().setUserId(account.getId());
         LocalUser.getInstance().setUserName(account.getDisplayName());
         LocalUser.getInstance().setUserPhotoUrl(account.getPhotoUrl());
-        mUtils.getUserFriends(account.getId());
+        data.getUserFriends(account.getId());
     }
 }

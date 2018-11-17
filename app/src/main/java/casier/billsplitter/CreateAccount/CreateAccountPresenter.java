@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import casier.billsplitter.DAO;
 import casier.billsplitter.FriendDataObserver;
 import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.Model.User;
@@ -13,22 +14,27 @@ public class CreateAccountPresenter implements FriendDataObserver {
 
     private CreateAccountActivity createAccountActivity;
     private Utils mUtils;
+    private DAO data;
 
     public CreateAccountPresenter(final CreateAccountActivity createAccountActivity){
         this.createAccountActivity = createAccountActivity;
         mUtils = Utils.getInstance();
-        mUtils.registerFriendObserver(this);
+        data = DAO.getInstance();
+        data.registerFriendObserver(this);
     }
 
     public void createAccount(String accountName, List<User> userList) {
         userList.add(mUtils.getUserById(LocalUser.getInstance().getUserId()));
-        mUtils.createAccount(accountName, userList);
+        List<String> userIdList = new ArrayList<>();
+        for(User u : userList)
+            userIdList.add(u.getUserId());
+        data.createAccount(accountName, userIdList);
     }
 
     public List<User> getUserFriendList(){
         LocalUser localUser = LocalUser.getInstance();
         List<User> friendList = new ArrayList<>();
-        for(User u : mUtils.getUserList()){
+        for(User u : data.userList){
             if(!u.getUserId().equals(localUser.getUserId())
                     && localUser.getFriendList().contains(u.getUserId()))
                 friendList.add(u);

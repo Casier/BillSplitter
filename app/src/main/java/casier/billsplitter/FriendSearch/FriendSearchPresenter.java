@@ -3,6 +3,7 @@ package casier.billsplitter.FriendSearch;
 import java.util.ArrayList;
 import java.util.List;
 
+import casier.billsplitter.DAO;
 import casier.billsplitter.FriendDataObserver;
 import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.Model.User;
@@ -12,17 +13,19 @@ public class FriendSearchPresenter implements FriendDataObserver{
 
     private FriendSearchActivity activity;
     private Utils mUtils;
+    private DAO data;
 
     public FriendSearchPresenter(FriendSearchActivity activity){
         this.activity = activity;
         mUtils = Utils.getInstance();
-        mUtils.registerFriendObserver(this);
+        data = DAO.getInstance();
+        data.registerFriendObserver(this);
     }
 
     public List<User> getUserList(){
         LocalUser localUser = LocalUser.getInstance();
         List<User> userList = new ArrayList<>();
-        for(User u : mUtils.getUserList()){
+        for(User u : data.userList){
             if(!localUser.getFriendList().contains(u.getUserId())
                     && !localUser.getUserId().equals(u.getUserId())
                     && !userList.contains(u)){
@@ -44,7 +47,7 @@ public class FriendSearchPresenter implements FriendDataObserver{
     public List<User> getFilteredUserList(String filter){
         LocalUser localUser = LocalUser.getInstance();
         List<User> filteredUserList = new ArrayList<>();
-        for(User u : mUtils.getUserList()){
+        for(User u : data.userList){
             if(!localUser.getFriendList().contains(u.getUserId())
                     && !localUser.getUserId().equals(u.getUserId())
                     && u.getUserName().toLowerCase().contains(filter.toLowerCase())
@@ -61,6 +64,6 @@ public class FriendSearchPresenter implements FriendDataObserver{
 
     public void clear(){
         activity = null;
-        mUtils.removeFriendObserver(this);
+        data.removeFriendObserver(this);
     }
 }

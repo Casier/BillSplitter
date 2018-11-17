@@ -25,6 +25,7 @@ import casier.billsplitter.AccountDataObserver;
 import casier.billsplitter.AccountSettings.AccountSettingsActivity;
 import casier.billsplitter.Balance.BalanceActivity;
 import casier.billsplitter.CreateAccount.CreateAccountActivity;
+import casier.billsplitter.DAO;
 import casier.billsplitter.Model.Account;
 import casier.billsplitter.R;
 import casier.billsplitter.Utils;
@@ -65,6 +66,7 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
     RelativeLayout placeholder;
 
     private Utils mUtils;
+    private DAO data;
     private AccountPresenter presenter;
 
     private AccountPickerAdapter adapter;
@@ -80,9 +82,10 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
         presenter = new AccountPresenter(this);
 
         mUtils = Utils.getInstance();
-        mUtils.registerAccountObserver(this);
+        data = DAO.getInstance();
+        data.registerAccountObserver(this);
 
-        adapter = new AccountPickerAdapter(this, R.layout.row_account_picker, mUtils.getAccountList());
+        adapter = new AccountPickerAdapter(this, R.layout.row_account_picker, data.accountList);
         adapter.setOnclick(AccountActivity.this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         accountPicker.setLayoutManager(layoutManager);
@@ -99,7 +102,7 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mUtils.removeAccountObserver(this);
+        data.removeAccountObserver(this);
     }
 
     @Override
@@ -140,12 +143,9 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
         ValueAnimator widthAnimator = ValueAnimator.ofInt(0, finalWidth);
         widthAnimator.setDuration(1500);
         widthAnimator.setInterpolator(new DecelerateInterpolator());
-        widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                accountText.getLayoutParams().width = (int) animation.getAnimatedValue();
-                accountText.requestLayout();
-            }
+        widthAnimator.addUpdateListener(animation -> {
+            accountText.getLayoutParams().width = (int) animation.getAnimatedValue();
+            accountText.requestLayout();
         });
         widthAnimator.start();
         balanceText.setWidth(0);
@@ -166,12 +166,9 @@ public class AccountActivity extends Activity implements AccountDataObserver, Ac
         ValueAnimator widthAnimator = ValueAnimator.ofInt(0, finalWidth);
         widthAnimator.setDuration(1500);
         widthAnimator.setInterpolator(new DecelerateInterpolator());
-        widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                balanceText.getLayoutParams().width = (int) animation.getAnimatedValue();
-                balanceText.requestLayout();
-            }
+        widthAnimator.addUpdateListener(animation1 -> {
+            balanceText.getLayoutParams().width = (int) animation1.getAnimatedValue();
+            balanceText.requestLayout();
         });
         //widthAnimator.start();
         accountIcon.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.text), android.graphics.PorterDuff.Mode.MULTIPLY);

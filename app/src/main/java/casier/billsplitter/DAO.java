@@ -9,9 +9,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -52,6 +50,24 @@ public class DAO implements UserDataSubject, FriendDataSubject, AccountDataSubje
         User user = new User(account.getEmail(), account.getDisplayName(), account.getPhotoUrl().toString());
         DatabaseReference reference = mDatabase.getReference("users");
         reference.child(account.getId()).setValue(user);
+    }
+
+    public void getUserFriends(String userID){
+        DatabaseReference reference = mDatabase.getReference("users").child(userID).child("friends");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    LocalUser.getInstance().addFriend(snapshot.getValue(String.class));
+                }
+                notifyFriendsObservers();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     // Load users data & track updates
@@ -160,18 +176,31 @@ public class DAO implements UserDataSubject, FriendDataSubject, AccountDataSubje
     }
 
     public void addBill(Bill bill){
-        Date date = Calendar.getInstance().getTime();
-        DatabaseReference reference = mDatabase.getReference("accounts").child(mUtils.getSelectedAccount().getAccountName()).child("bills");
-        reference.child(date.toString()).setValue(bill);
+        if(!mUtils.getSelectedAccount().getBills().contains(bill)){
+            mUtils.getSelectedAccount().getBills().add(bill);
+            for(Account a : accountList){
+                if(a.equals(mUtils.getSelectedAccount()))
+                    a.addBill(bill);
+            }
+            DatabaseReference reference = mDatabase.getReference("accounts").child(mUtils.getSelectedAccount().getAccountName()).child("bills");
+            reference.child(bill.getDate()).setValue(bill);
 
-        notifyAccountObservers();
-        notifyBillObservers();
+            notifyAccountObservers();
+            notifyBillObservers();
+        }
     }
 
     public void deleteBill(Bill bill){
-        mDatabase = FirebaseDatabase.getInstance();
-        mDatabase.getReference("accounts").child(mUtils.getSelectedAccount().getAccountName()).child("bills").child(bill.getDate()).removeValue();
-        notifyBillObservers();
+        if(mUtils.getSelectedAccount().getBills().contains(bill)) {
+            mUtils.getSelectedAccount().getBills().remove(bill);
+            for (Account a : accountList) {
+                if (a.equals(mUtils.getSelectedAccount()))
+                    a.removeBill(bill);
+            }
+            mDatabase = FirebaseDatabase.getInstance();
+            mDatabase.getReference("accounts").child(mUtils.getSelectedAccount().getAccountName()).child("bills").child(bill.getDate()).removeValue();
+            notifyBillObservers();
+        }
     }
 
     public void createAccount(String accountName, List<String> usersId){

@@ -39,6 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import casier.billsplitter.BuildConfig;
+import casier.billsplitter.DAO;
 import casier.billsplitter.Model.LocalUser;
 import casier.billsplitter.Model.User;
 import casier.billsplitter.R;
@@ -60,6 +61,7 @@ public class AddBillActivity extends Activity implements UserDataObserver {
     Button btnAddBill;
 
     private Utils mUtils;
+    private DAO data;
     private UserPickerAdapter adapter;
     private AddBillPresenter presenter;
     private Uri imageUri;
@@ -79,7 +81,8 @@ public class AddBillActivity extends Activity implements UserDataObserver {
 
         presenter = new AddBillPresenter(this);
         mUtils = Utils.getInstance();
-        mUtils.registerUserObserver(this);
+        data = DAO.getInstance();
+        data.registerUserObserver(this);
         detector = new TextRecognizer.Builder(getApplicationContext()).build();
 
         Intent intent = getIntent();
@@ -97,7 +100,7 @@ public class AddBillActivity extends Activity implements UserDataObserver {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mUtils.removeUserObserver(this);
+        data.removeUserObserver(this);
     }
 
     @Override

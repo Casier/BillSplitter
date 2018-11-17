@@ -3,6 +3,7 @@ package casier.billsplitter.AccountSettings;
 import java.util.ArrayList;
 import java.util.List;
 
+import casier.billsplitter.DAO;
 import casier.billsplitter.Model.User;
 import casier.billsplitter.Utils;
 
@@ -10,10 +11,12 @@ public class AccountSettingsPresenter {
 
     private AccountSettingsActivity accountSettingsActivity;
     private Utils mUtils;
+    private DAO data;
 
     public AccountSettingsPresenter(AccountSettingsActivity activity){
         this.accountSettingsActivity = activity;
         mUtils = Utils.getInstance();
+        data = DAO.getInstance();
     }
 
     public void setInitialData(){
@@ -26,10 +29,10 @@ public class AccountSettingsPresenter {
     }
 
     public void deleteAccount(){
-        mUtils.deleteAccount(mUtils.getSelectedAccount());
+        data.deleteAccount(mUtils.getSelectedAccount());
     }
 
     public void updateAccount(String accountName, List<User> pickedUsers){
-        mUtils.updateAccount(accountName, pickedUsers);
+        data.updateAccount(accountName, pickedUsers);
     }
 }

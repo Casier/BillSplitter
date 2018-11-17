@@ -25,6 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import casier.billsplitter.AddBill.AddBillActivity;
 import casier.billsplitter.BillDataObserver;
+import casier.billsplitter.DAO;
 import casier.billsplitter.Model.Balance;
 import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.User;
@@ -34,11 +35,6 @@ import casier.billsplitter.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnItemClicked, BillDataObserver, UserDataObserver, View.OnClickListener{
-
-    //TODO probablement de la redondance ici, à fix.
-
-    //TODO balancer toute la logique non-UI vers le presenter
-
 
     @BindView(R.id.billsList)
     RecyclerView billRecycler;
@@ -61,6 +57,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     private BalancePresenter presenter;
     private BalanceArrayAdapter balanceArrayAdapter;
     private Utils mUtils;
+    private DAO data;
 
     static final int ADD_BILL_REQUEST = 1;
 
@@ -72,8 +69,9 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
         fab.setOnClickListener(this);
 
         mUtils = Utils.getInstance();
-        mUtils.registerBillObserver(this);
-        mUtils.registerUserObserver(this);
+        data = DAO.getInstance();
+        data.registerBillObserver(this);
+        data.registerUserObserver(this);
 
         presenter = new BalancePresenter(this);
 
@@ -91,8 +89,8 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mUtils.removeBillObserver(this);
-        mUtils.removeUserObserver(this);
+        data.removeBillObserver(this);
+        data.removeUserObserver(this);
     }
 
     public void checkIfPlaceholder(){

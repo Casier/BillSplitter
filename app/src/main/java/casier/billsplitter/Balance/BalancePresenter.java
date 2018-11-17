@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import casier.billsplitter.DAO;
 import casier.billsplitter.Model.Balance;
 import casier.billsplitter.Model.Bill;
 import casier.billsplitter.Model.User;
@@ -16,22 +17,24 @@ public class BalancePresenter {
     private FirebaseDatabase mDatabase;
     private BalanceActivity balanceActivity;
     private Utils mUtils;
+    private DAO data;
 
     public BalancePresenter(final BalanceActivity balanceActivity) {
         this.balanceActivity = balanceActivity;
         this.mUtils = Utils.getInstance();
+        this.data = DAO.getInstance();
     }
 
     public void deleteBill(int position){
-        mUtils.deleteBill(mUtils.getBillList().get(position));
+        data.deleteBill(mUtils.getBillList().get(position));
     }
 
     public List<Balance> doTheBalance(){
         List<Balance> balanceList = new ArrayList<>();
-        if(mUtils.getUserList() == null || mUtils.getUserList().size() == 0)
+        if(data.userList == null || data.userList.size() == 0)
             return null;
 
-        for(User u : mUtils.getUserList())
+        for(User u : data.userList)
             u.clearBalance();
 
         for(Bill b : mUtils.getBillList()){
@@ -54,8 +57,8 @@ public class BalancePresenter {
             }
         }
 
-        for(User payer : mUtils.getUserList()){
-            for(User paid : mUtils.getUserList()){
+        for(User payer : data.userList){
+            for(User paid : data.userList){
                 if(payer.getUsersBalance() !=  null){
                     if(payer.getUsersBalance().containsKey(paid) && paid.getUsersBalance() != null){
                         Float payerAmount = payer.getUsersBalance().get(paid);
@@ -78,7 +81,7 @@ public class BalancePresenter {
             }
         }
 
-        for(User u : mUtils.getUserList()){
+        for(User u : data.userList){
             if(u.getUsersBalance() != null){
                 for(Map.Entry<User, Float> entry : u.getUsersBalance().entrySet()){
                     balanceList.add(new Balance(u.getUserId(), entry.getKey().getUserId(), entry.getValue()));
