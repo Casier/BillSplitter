@@ -21,8 +21,6 @@ import casier.billsplitter.R;
 import casier.billsplitter.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-//TODO voir les notes
-
 public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<Bill> billList;
@@ -33,7 +31,7 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         void onClick(int position);
     }
 
-    public BalanceArrayAdapter(@NonNull Context context, int resource, List<Bill> billList) {
+    public BalanceArrayAdapter(List<Bill> billList) {
         this.billList = billList;
         this.mUtils = Utils.getInstance();
         setHasStableIds(true);
@@ -67,22 +65,12 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             case 1:
                 BillsSelfHolder billsSelfHolder = (BillsSelfHolder) holder;
                 billsSelfHolder.bindBill(billList.get(position));
-                billsSelfHolder.layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        onClick.onClick(position);
-                    }
-                });
+                billsSelfHolder.layout.setOnClickListener(view -> onClick.onClick(position));
                 break;
             case 2:
                 BillsHolder billsHolder = (BillsHolder) holder;
                 billsHolder.bindBill(billList.get(position));
-                billsHolder.layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        onClick.onClick(position);
-                    }
-                });
+                billsHolder.layout.setOnClickListener(view -> onClick.onClick(position));
                 break;
         }
     }
@@ -103,10 +91,6 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public void setOnClick(OnItemClicked onClick) {
         this.onClick = onClick;
-    }
-
-    public Bill getItemAtPosition(int position){
-        return billList.get(position);
     }
 
     public class BillsSelfHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
@@ -136,7 +120,7 @@ public class BalanceArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             billSecondLine.setText(Html.fromHtml("payé par <b>" + mUtils.getUserById(bill.getOwnerId()).getUserName() + "</b>"));
 
             Glide.with(context)
-                    .load(Uri.parse(mUtils.getInstance().getImageUrlByUserId(bill.getOwnerId())))
+                    .load(Uri.parse(mUtils.getImageUrlByUserId(bill.getOwnerId())))
                     .into(userImage);
         }
 

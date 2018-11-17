@@ -2,12 +2,8 @@ package casier.billsplitter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -127,7 +123,7 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
         reference.child("friends").setValue(currentUser.getFriendList());
     }
 
-    public void sendInviteToFriend(String mail, String title, String body, Context context){
+    public void sendInviteToFriend(Context context){
         // TODO use param
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("text/plain");
@@ -201,6 +197,8 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
     }
 
     public void createAccount(String accountName, List<User> userList){
+        // TODO à refaire c'est de la merde
+
         if(!accountList.contains(accountName)){
             List<String> usersId = new ArrayList<>();
             for(User u : userList)
@@ -211,7 +209,7 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
         }
     }
 
-    public void updateAccount(String accountName, List<User> userList){
+    public void updateAccount(String accountName){
         DatabaseReference oldReference = mDatabase.getReference("accounts").child(selectedAccount.getAccountName());
         DatabaseReference newReference = mDatabase.getReference("accounts").child(accountName);
         copyRecord(oldReference, newReference);
@@ -233,14 +231,9 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                toPath.setValue(dataSnapshot.getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isComplete()) {
-                            fromPath.removeValue();
-                        } else {
-                            // todo show toast
-                        }
+                toPath.setValue(dataSnapshot.getValue()).addOnCompleteListener(task ->{
+                    if (task.isComplete()) {
+                        fromPath.removeValue();
                     }
                 });
             }
@@ -272,12 +265,10 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
                 iterator.remove();
         }
         mDatabase = FirebaseDatabase.getInstance();
-        mDatabase.getReference("accounts").child(account.getAccountName()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                notifyAccountObservers();
-            }
-        });
+        mDatabase.getReference("accounts")
+                .child(account.getAccountName())
+                .removeValue()
+                .addOnCompleteListener(task -> notifyAccountObservers());
     }
 
     public User getUserById(String id){
@@ -363,29 +354,9 @@ public class Utils implements UserDataSubject, BillDataSubject, AccountDataSubje
     @Override
     public void notifyAccountObservers() {
         for(AccountDataObserver o : mAccountObservers){
-            Log.d("panda","oui");
             Collections.sort(accountList, (u1, u2) -> (u1.getAccountName().compareTo(u2.getAccountName())));
             o.onAccountDataChange(accountList);
         }
-    }
-
-    public Account getAccountByName(String name){
-        for(Account account : accountList){
-            if(account.getAccountName().equals(name)){
-                accountList.remove(account);
-                return account;
-            }
-        }
-        return null;
-    }
-
-    public List<User> searchUsers(String searchSequence){
-        List<User> searchedUserList = new ArrayList<>();
-        for(User u : userList){
-            if(u.getUserName().toLowerCase().contains(searchSequence.toLowerCase()))
-                searchedUserList.add(u);
-        }
-        return searchedUserList;
     }
 
     @Override

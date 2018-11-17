@@ -58,7 +58,6 @@ public class FriendSearchActivity extends Activity implements FriendListAdapter.
 
     @Override
     public void onUserClick(int position) {
-        // TODO dialog de confirmation
 
         final Dialog dialog = new Dialog(this, android.R.style.Theme_Dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -95,9 +94,7 @@ public class FriendSearchActivity extends Activity implements FriendListAdapter.
 
     @OnClick(R.id.search_friend_invite_button)
     public void onInviteClick(){
-        presenter.sendInviteToFriend("","", "");
-
-        // TODO dialog d'input pour les data ou fragment maybe
+        presenter.sendInviteToFriend();
     }
 
     public void updateAdapter(List<User> friendList){

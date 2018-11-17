@@ -1,10 +1,6 @@
 package casier.billsplitter;
 
-import android.support.annotation.NonNull;
-
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -206,15 +202,9 @@ public class DAO implements UserDataSubject, FriendDataSubject, AccountDataSubje
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                toPath.setValue(dataSnapshot.getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isComplete()) {
-                            fromPath.removeValue();
-                        } else {
-                            // todo show toast
-                        }
-                    }
+                toPath.setValue(dataSnapshot.getValue()).addOnCompleteListener(task -> {
+                    if(task.isComplete())
+                        fromPath.removeValue();
                 });
             }
 

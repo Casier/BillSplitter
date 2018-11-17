@@ -49,7 +49,7 @@ public class Account {
             usersId.add(user.getUserId());
     }
 
-    public boolean removeUserToAccount(User user){
+    public boolean removeUserFromAccount(User user){
         boolean userBillFree = true;
         if(usersId.contains(user.getUserId())){
              for(Bill b : Utils.getInstance().getBillList()){
@@ -58,7 +58,6 @@ public class Account {
              }
         }
         if(userBillFree){
-            // TODO : Supprimer l'utililsateur de la liste des utilisateurs de l'account
             usersId.remove(user.getUserId());
         }
         return userBillFree;

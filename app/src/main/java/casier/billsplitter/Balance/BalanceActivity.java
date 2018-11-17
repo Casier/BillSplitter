@@ -77,7 +77,7 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
 
         presenter = new BalancePresenter(this);
 
-        balanceArrayAdapter = new BalanceArrayAdapter(this, R.layout.row_bill_layout, mUtils.getSelectedAccount().getBills());
+        balanceArrayAdapter = new BalanceArrayAdapter(mUtils.getSelectedAccount().getBills());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         billRecycler.setLayoutManager(layoutManager);
         billRecycler.setHasFixedSize(true);
@@ -147,8 +147,6 @@ public class BalanceActivity extends Activity implements BalanceArrayAdapter.OnI
     @Override
     public void onClick(View view) {
         fab.setEnabled(false);
-        /** Utile pour tester les settings */
-        //Intent intent = new Intent(this, AccountSettingsActivity.class);
         Intent intent = new Intent(this, AddBillActivity.class);
         startActivityForResult(intent, ADD_BILL_REQUEST);
     }

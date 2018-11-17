@@ -37,8 +37,8 @@ public class FriendSearchPresenter implements FriendDataObserver{
         mUtils.addFriend(friendID);
     }
 
-    public void sendInviteToFriend(String mail, String messageTitle, String messageBody){
-        mUtils.sendInviteToFriend(mail, messageTitle, messageBody, activity);
+    public void sendInviteToFriend(){
+        mUtils.sendInviteToFriend(activity);
     }
 
     public List<User> getFilteredUserList(String filter){

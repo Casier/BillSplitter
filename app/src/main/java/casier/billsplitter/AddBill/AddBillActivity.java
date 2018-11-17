@@ -248,9 +248,8 @@ public class AddBillActivity extends Activity implements UserDataObserver {
         checkButtonEnabled();
     }
 
-    // TODO ajouter le cas selectedUser.size() == 0
     public void checkButtonEnabled(){
-        if(billNameExists && billAmountExists){
+        if(billNameExists && billAmountExists && adapter.getSelectedUserList().size() > 0){
             btnAddBill.setEnabled(true);
             btnAddBill.setTextColor(getResources().getColor(R.color.text));
         } else {
